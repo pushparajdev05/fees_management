@@ -1,0 +1,207 @@
+
+html
+{
+    height:100%;
+}
+body
+{
+    height:100%;
+}
+        .one
+{
+    display: flex;
+    justify-content: space-around;
+    align-items:center;
+    margin-top:50px;
+}
+.one .text
+{
+    height:400px;
+    display:flex;
+    flex-direction: column;
+    /* align-items:center; */
+    justify-content:space-around;
+    color:var(--font-green);
+    font-size:16px;
+    text-align:justify;
+    /* transform:translateX(-150px); */
+    animation:transform_text 1s 1s backwards;
+    margin-right:100px;
+    margin-left:20px;
+}
+.one img
+{
+    display: inline-block;
+    width:600px;
+    height:350px;
+    margin-left:-40px;
+}
+.one .text button
+{    margin-left:20px;
+}
+.lottie
+{
+    /* transform:translateX(200px); */
+    animation:transform_img 1s 1s backwards;
+
+
+}
+body
+{
+    display:flex;
+    flex-direction:column;
+    justify-content: space-between;
+    overflow-x:hidden;
+}
+
+.second .img img
+{
+    width:60px;
+    height:60px;
+
+}
+.second .img2 img
+{
+    width:70px;
+    height:70px;
+}
+.second .img
+{
+    height:130px;
+    font-size:14px;
+    padding-left:20px;
+    border-left:var(--font-green) solid 2px;
+    display:flex;
+    align-items:center;
+    margin-right:70px;
+    overflow-x:hidden;
+}
+.second
+{
+
+    height:150px;
+    width:100%;
+    padding-bottom:50px;
+
+}
+.second .sub
+{
+    display:flex;
+    margin-left:110px;
+
+}
+.img2 .part img
+{
+    margin-top:-6px;
+}
+.second .img .part
+{
+    height:125px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-evenly;
+    margin-bottom:4px;
+}
+.sub .img:nth-child(1) .part
+{
+    /* transform:translateX(-220px); */
+    animation:transform_desc1 1s 3.5s backwards;
+}
+.sub .img:nth-child(2) .part
+{
+    /* transform:translateX(-300px); */
+    animation:transform_desc2 1s 3.5s backwards;
+}
+.sub .img:nth-child(3) .part
+{
+    /* transform:translateX(-415px); */
+    animation:transform_desc3 1s 3.5s backwards;
+}
+.sub .img:nth-child(1)
+{
+    /* transform:translateY(-170px); */
+    animation:transform_part 0.5s 2s backwards ease-in-out;
+}
+.sub .img:nth-child(2)
+{
+    /* transform:translateY(-170px); */
+        animation:transform_part 0.5s 2.5s backwards ease-in-out;
+}
+.sub .img:nth-child(3)
+{
+    /* transform:translateY(-170px); */
+        animation:transform_part 0.5s 3s backwards ease-in-out;
+}
+.sub
+{
+    overflow-y:hidden;
+}
+
+
+/* button styles */
+
+
+button {
+  --secondary-color: #fff;
+  --hover-color: #111;
+  --arrow-width: 10px;
+  --arrow-stroke: 2px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 20px;
+  color: var(--secondary-color);
+  padding: 1em 1.8em;
+  background: var(--dark-green);
+  display: flex;
+  transition: 0.2s background;
+  align-items: center;
+  gap: 0.6em;
+  font-weight: bold;
+  width: 150px;
+}
+
+button .arrow-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button .arrow {
+  margin-top: 1px;
+  width: var(--arrow-width);
+  background: var(--primary-color);
+  height: var(--arrow-stroke);
+  position: relative;
+  transition: 0.2s;
+}
+
+button .arrow::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  border: solid var(--secondary-color);
+  border-width: 0 var(--arrow-stroke) var(--arrow-stroke) 0;
+  display: inline-block;
+  top: -3px;
+  right: 3px;
+  transition: 0.2s;
+  padding: 3px;
+  transform: rotate(-45deg);
+}
+
+button:hover {
+  background-color: var(--font-green);
+}
+
+button:hover .arrow {
+  background: var(--secondary-color);
+}
+
+button:hover .arrow:before {
+  right: 0;
+}
+
+
+
+/* animation */
+

@@ -1,0 +1,519 @@
+#datatable
+{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+#datatable h1{
+  padding-top:20px;
+}
+/* html
+{
+  height: 100%;
+} */
+ table ,td,th
+ {
+  border:black 1px solid;
+  border-collapse:collapse;
+ }
+body
+{
+  position: relative;
+  overflow-x: hidden;
+  height:100vh;
+}
+#options
+{
+  width:100%;
+  align-self: flex-end;
+  display: flex;
+  flex-direction:column;
+  padding-top:30px;
+
+}
+#s1,#n1
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.option
+{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items: center;  
+  padding-bottom:10px;
+}
+.opt2 .left
+{
+  justify-content:flex-start !important;
+}
+#tooltip_option
+{
+  margin-left:30px;
+}
+.option .left
+{
+  margin-left:20px;
+  width:400px;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.option .left label
+{
+    font-size:20px;
+  font-weight:500;
+  color:var(--font-green);
+}
+#filter_date
+{
+  height:30px;
+}
+.option .right
+{
+  width:700px;
+    display:flex;
+  justify-content:space-between;
+  align-items: center;
+}
+.select{
+  display:flex;
+  align-items: center;
+}
+.select select
+{
+  height:25px;
+  margin-right:20px;
+}
+#switch-new
+{
+  width:230px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.option #select{
+  position: relative;
+  width:400px;
+  height:70px;
+  display:flex;
+  justify-content: flex-start;
+  padding-left:20px;
+  align-items: center;
+  border-left:2px solid var(--font-green);
+  overflow-x: hidden;
+}
+.option .select
+{
+  position:absolute;
+  background-color: var(--light-green);
+}
+#select2
+{
+  z-index:2;
+  /* transform: translateX(-400px); */
+  /* animation-duration: 1s; */
+}
+/* table style */
+
+#table-content
+{
+  /* margin-top:40px; */
+  display:flex;
+  width:98%;
+}
+.table-cash
+{
+  background-color: var(--light-green);
+  width:100%;
+  height:100%;
+  max-height:70vh;
+  overflow:auto;
+
+}
+.table-cash h1{
+  text-align:center;
+
+}
+
+#table-content .input
+{
+  width:240px;
+  float:right;
+  margin-top:20px;
+}
+#tot1,#tot2
+{
+    border:2px solid  var(--font-green);
+
+}
+#head_part
+{
+    width:100%;
+    /* position: sticky;
+    top:66.6px; */
+    background-color:var(--light-green);
+    z-index:4;
+    border-bottom: dotted 2px var(--font-green);
+}
+#heading h1{
+  text-align:center;
+}
+#action
+{
+  width:150px;
+}
+
+
+
+/* button style for switch */
+
+
+.download-btn {
+  height: 45px;
+  width: 95px;
+  cursor: pointer;
+  background: white;
+  border: none;
+  background: var(--dark-green);
+  border-radius: 30px;
+  overflow: hidden;
+}
+.download-btn:hover
+{
+    background-color: var(--font-green);
+    transition:250ms;
+}
+
+.button-content {
+  transform: translateY(-45px);
+  transition: all 250ms ease-in-out;
+}
+
+.svg-container,
+.text-container {
+  height: 45px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-container .text {
+  font-size: 13px;
+  color: #fff;
+  font-weight: 600;
+  opacity: 1;
+  transition: opacity ease-in-out 250ms;
+}
+
+.download-icon {
+  height: 25px;
+  width: 25px;
+  fill: #fff;
+  opacity: 0;
+  transition: opacity ease-in-out 250ms;
+}
+
+/* hover state for the button */
+.download-btn:hover .button-content {
+  transform: translateY(0px);
+}
+
+.download-btn:hover .text {
+  opacity: 0;
+}
+
+.download-btn:hover .download-icon {
+  opacity: 1;
+}
+
+.download-btn:focus .download-icon {
+  -webkit-animation: heartbeat 1.5s ease-in-out infinite both;
+  animation: heartbeat 1.5s ease-in-out infinite both;
+}
+
+@-webkit-keyframes heartbeat {
+  from {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: center center;
+    transform-origin: center center;
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+  10% {
+    -webkit-transform: scale(0.91);
+    transform: scale(0.91);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+  17% {
+    -webkit-transform: scale(0.98);
+    transform: scale(0.98);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+  33% {
+    -webkit-transform: scale(0.87);
+    transform: scale(0.87);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+  45% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+}
+@keyframes heartbeat {
+  from {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: center center;
+    transform-origin: center center;
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+  10% {
+    -webkit-transform: scale(0.91);
+    transform: scale(0.91);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+  17% {
+    -webkit-transform: scale(0.98);
+    transform: scale(0.98);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+  33% {
+    -webkit-transform: scale(0.87);
+    transform: scale(0.87);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+  45% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+}
+/* TODO: fees table styles */
+#fees_structure
+{
+  display:none;
+  position:absolute;
+  top:160px;
+  right:20px;
+  background-color: white;
+  z-index: 6;
+  border-radius:10px;
+}
+#fees_define
+{
+  padding-top:30px;
+  padding-inline: 20px;
+  padding-bottom:20px;
+  position: relative;
+
+}
+#fees_table,#fees_table th,#fees_table td
+{
+  border:var(--font-green) 2px solid;
+  border-collapse: collapse;
+}
+#fees_table th,#fees_table td
+{
+  padding:5px;
+}
+/* #fees_table td:last-child
+{
+
+  text-align:center;
+} */
+#table_close{
+  position:absolute;
+  top:0;
+  right:0;
+  width:24px;
+  height:24px;
+  background-color:var(--dark-green);
+  border-radius:0 10px 0 10px;
+}
+#table_close:hover{
+  background-color: red;
+  color:white;
+  transition:0.1s;
+}
+#csv_submit
+{
+  margin-left:30px;
+  margin-top:6px;
+}
+/* TODO: tooltip option styles */
+
+/* From Uiverse.io by ElgyoshiMa91846 */ 
+/* This is an example, feel free to delete this code */
+.tooltip-container {
+  background: var(--dark-green);
+  /* background: linear-gradient(
+    138deg,
+    var(--dark-green) 15%,
+    var(--dark-green) 65%
+  ); */
+  position: relative;
+  cursor: pointer;
+  font-size: 17px;
+  padding: 0.7em 0.7em;
+  border-radius: 50px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+.tooltip-container:hover {
+  background: var(--font-green);
+  transition: all 0.2s;
+}
+.tooltip-container .text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  fill: #fff;
+  transition: all 0.2s;
+}
+.tooltip-container .text svg
+{ 
+  stroke: white;
+}
+.tooltip-container:hover .text {
+  fill: white;
+  transition: all 0.6s;
+}
+
+/* Inicio do tooltip whatsApp */
+.tooltip3 {
+  position: absolute;
+  top: 10%;
+  left: 60%;
+  transform: translateX(80%);
+  opacity: 0;
+  visibility: hidden;
+  background: var(--dark-green);
+  fill: #1db954;
+  padding: 10px;
+  border-radius: 50px;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s,
+    top 0.3s,
+    background 0.3s;
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-contain .tooltip3 {
+  top: 150%;
+  opacity: 1;
+  visibility: visible;
+  background: var(--dark-green);
+  transform: translate(85%, -5px);
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tooltip-container:hover .tooltip3:hover {
+  background: var(--font-green);
+}
+/* Fim do tooltip whatsApp */
+
+/* Inicio do tooltip Discord */
+.tooltip4 {
+  position: absolute;
+  top: 10%;
+  left: -190%;
+  transform: translateX(70%);
+  opacity: 0;
+  visibility: hidden;
+  background: var(--dark-green);
+  fill: #8c9eff;
+  padding: 10px;
+  border-radius: 50px;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s,
+    top 0.3s,
+    background 0.3s;
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-contain .tooltip4 {
+  top: 150%;
+  opacity: 1;
+  visibility: visible;
+  background: var(--dark-green);
+  transform: translate(70%, -5px);
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tooltip-container:hover .tooltip4:hover {
+  background: var(--font-green);
+}
+/* Fim do tooltip Discord */
+
+/* Inicio do tooltip pinterest */
+.tooltip5 {
+  position: absolute;
+  top: 100%;
+  left: -145%;
+  transform: translateX(70%);
+  opacity: 0;
+  visibility: hidden;
+  background: #fff;
+  fill: #bd081c;
+  padding: 10px;
+  border-radius: 50px;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s,
+    top 0.3s,
+    background 0.3s;
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-container:hover .tooltip5 {
+  top: -78%;
+  opacity: 1;
+  visibility: visible;
+  background: #fff;
+  transform: translate(70%, -5px);
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tooltip-container:hover .tooltip5:hover {
+  background: #bd081c;
+  fill: #fff;
+}
+/* TODO: datatable styles */
+.dt-buttons
+{
+  display:inline-block;
+  margin-bottom:10px;
+}
+.dt-search
+{
+  display:inline-block;
+  padding-left:10px;
+}
+
+
+

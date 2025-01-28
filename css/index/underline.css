@@ -1,0 +1,31 @@
+
+    ul li:nth-child(2)::after
+    {
+        left:-133.3px;
+        
+    }
+    ul li:nth-child(2):hover::after
+    {
+        left:0;
+        
+    }
+    ul li:nth-child(3)::after
+    {
+        left:-137.3px;
+        
+    }
+    ul li:nth-child(3):hover::after
+    {
+        left:0;
+        
+    }
+    ul li:nth-child(4)::after
+    {
+        left:-100px;
+        
+    }
+    ul li:nth-child(4):hover::after
+    {
+        left:0;
+        
+    }
