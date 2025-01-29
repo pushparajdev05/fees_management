@@ -242,34 +242,31 @@ if (isset($_POST["decide"])) {
             }
 
         }
-    } 
-     else {
+    } else {
         $old_admission = trim($_POST["old_ad"]);
         $sno1 = trim($_POST["sno1"]);
         $today = trim($_POST["date"]);
-        $sql= "update cash set name= ?,class= ?,section= ? where sno= ? ";
+        $sql = "update cash set name= ?,class= ?,section= ? where sno= ? ";
         $stmt = $con->prepare($sql);
-        $stmt->bind_param("sssi",$name,$class,$section,$old_admission);
-        $overall_update="update overall set name= ?,class= ?,section= ? where admission= ?";
+        $stmt->bind_param("sssi", $name, $class, $section, $old_admission);
+        $overall_update = "update overall set name= ?,class= ?,section= ? where admission= ?";
         $overall_stmt = $con->prepare($overall_update);
-        $overall_stmt->bind_param("sssi", $name, $class, $section,$admission);
+        $overall_stmt->bind_param("sssi", $name, $class, $section, $admission);
         if ($stmt->execute()) {
             $message = "";
-            if($overall_stmt->execute())
-            {
+            if ($overall_stmt->execute()) {
                 $table_tr = [
                     $name,
                     $class,
                     $section,
                 ];
-                 $message = "The Transaction has updated in Daily Collection and overall table";
-            }
-            else{
+                $message = "The Transaction has updated in Daily Collection and overall table";
+            } else {
                 $message = "The Transaction has updated in Daily Collection and not updated in overall table, reason could be (not found student record related to admission no)";
             }
-            echo json_encode(["row"=>[0, $table_tr],"message"=>[101,$message]]);
+            echo json_encode(["row" => [0, $table_tr], "message" => [101, $message]]);
         } else {
-                       echo json_encode(["message"=>[404,"The transaction has not updated in Daily Collection"]]);
+            echo json_encode(["message" => [404, "The transaction has not updated in Daily Collection"]]);
 
         }
     }

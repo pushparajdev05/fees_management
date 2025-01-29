@@ -40,8 +40,10 @@
                         <option value="VIII">VIII</option>
                         <option value="IX">IX</option>
                         <option value="X">X</option>
-                        <option value="XI">XI</option>
-                        <option value="XII">XII</option>
+                        <option value="XIAC">XIAC</option>
+                        <option value="XIDE">XIDE</option>
+                        <option value="XIIAC">XIIAC</option>
+                        <option value="XIIDE">XIIDE</option>
                     </select>
                 </div>
             </div>

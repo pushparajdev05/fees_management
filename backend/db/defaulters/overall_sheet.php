@@ -40,7 +40,7 @@ if($uploaded==true)
 {
     if (file_exists($csvFile)) {
         $action=$_POST["action"];
-        $class_array = ["sum(LKG) as LKG", "sum(UKG) as UKG", "sum(I) as I", "sum(II) as II", "sum(III) as III", "sum(IV) as IV", "sum(V) as V", "sum(VI) as VI", "sum(VII) as VII", "sum(VIII) as VIII", "sum(IX) as IX", "sum(X) as X", "sum(XI) as XI", "sum(XII) as XII"];
+        $class_array = ["sum(LKG) as LKG", "sum(UKG) as UKG", "sum(I) as I", "sum(II) as II", "sum(III) as III", "sum(IV) as IV", "sum(V) as V", "sum(VI) as VI", "sum(VII) as VII", "sum(VIII) as VIII", "sum(IX) as IX", "sum(X) as X", "sum(XIAC) as XIAC","sum(XIDE) as XIDE", "sum(XIIAC) as XIIAC", "sum(XIIDE) as XIIDE"];
         $class_string = implode(",", $class_array);
         $fees_sql = "select $class_string from fees_table where types like 'term%'";
         // echo $fees_sql;
@@ -92,7 +92,7 @@ if($uploaded==true)
                 {
                     $writeoff = 0;
                 }
-                if(empty($writeoff) || !(is_int((int)$writeoff)))
+                if(empty($scholar_amt) || !(is_int((int)$scholar_amt)))
                 {
                     $scholar_amt = 0;
                 }
@@ -110,7 +110,7 @@ if($uploaded==true)
                 }
                 $total_received = $term1 + $term2 + $term3;
                 $balance_receivable = abs($total_receivable - $total_received - $writeoff - $scholar_amt);
-                $values[] = "($admission,'$name','$class','$section',$term1,$term2,$term3,'$date','$scholar',$writeoff,$total_receivable,$total_received,$balance_receivable)";
+                $values[] = "($admission,'$name','$class','$section',$term1,$term2,$term3,'$date','$scholar',$scholar_amt,$writeoff,$total_receivable,$total_received,$balance_receivable)";
             }
             $cat_values = implode(", ", $values);
             // echo $cat_values;

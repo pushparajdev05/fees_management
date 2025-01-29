@@ -44,7 +44,7 @@ if($uploaded==true)
             $new_fees = false;
             $values = [];
             $values_old = [];
-            $insertSql = "INSERT INTO fees_table (types,LKG,UKG,I,II,III,IV,V,VI,VII,VIII,IX,X,XI,XII) VALUES ";
+            $insertSql = "INSERT INTO fees_table (types,LKG,UKG,I,II,III,IV,V,VI,VII,VIII,IX,X,XIAC,XIDE, XIIAC,XIIDE) VALUES ";
             while (($data = fgetcsv($handle, 1200, ",")) !== FALSE) 
             {
                 $fees_types = strtolower(trim($data[0]));
@@ -60,9 +60,11 @@ if($uploaded==true)
                 $VIII=trim($data[10]);
                 $IX=trim($data[11]);
                 $X=trim($data[12]);
-                $XI=trim($data[13]);
-                $XII=trim($data[14]);
-                $values[] = "('{$fees_types}',$LKG,$UKG,$I,$II,$III,$IV,$V,$VI,$VII,$VIII,$IX,$X,$XI,$XII)";
+                $XIAC=trim($data[13]);
+                $XIDE=trim($data[14]);
+                $XIIAC=trim($data[15]);
+                $XIIDE=trim($data[16]);
+                $values[] = "('{$fees_types}',$LKG,$UKG,$I,$II,$III,$IV,$V,$VI,$VII,$VIII,$IX,$X,$XIAC,$XIDE,$XIIAC,$XIIDE)";
             }
             $insertSql .= implode(", ", $values);
             $con->begin_transaction();

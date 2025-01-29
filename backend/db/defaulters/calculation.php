@@ -1,7 +1,7 @@
 <?php 
 include ("./db_connection.php");
 if (isset($_POST["option"])) {
-    $class_array = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    $class_array = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XIAC","XIDE", "XIIAC","XIIDE"];
     $table = "";
     if ($_POST["option"] == "Class") {
         $no_stud = [];
@@ -56,7 +56,7 @@ if (isset($_POST["option"])) {
                     $terms_received["$value"][] = $row["term3"];
                     $total_scholar_amt["$value"] = $row["scholar_amt"];
                     $total_writeoff["$value"] = $row["writeoff"];
-                    $total_term_received["$value"] = $terms_received["$value"][0] + $terms_received["$value"][1] + $terms_received["$value"][2] + $row["writeoff"];
+                    $total_term_received["$value"] = $terms_received["$value"][0] + $terms_received["$value"][1] + $terms_received["$value"][2] + $row["writeoff"] + $row["scholar_amt"];
                     $total_defaults["$value"] = $term_total_receivable["$value"] - $total_term_received["$value"];
                 }
             }
@@ -158,6 +158,7 @@ if (isset($_POST["option"])) {
                 }
             }
         }
+        // print_r($term_fees);
         if (count($term_fees["LKG"]) >= 3) {
             $tbody = "";
             if ($_POST["option"] == "Term I") {
@@ -459,10 +460,11 @@ if (isset($_POST["option"])) {
                     if ($section_result->num_rows > 0) {
                         $class_sec[$class] = call_user_func_array("array_merge", $section_result->fetch_all());
                         $class_sec[$class] = array_values(array_unique($class_sec[$class]));
+                        // print_r($class_sec[$class]);
                         foreach ($class_sec[$class] as $section) {
                             $term1_sql = "select sum({$term_fees[$class][0]} - term1) as term1_receivable from overall where class = '{$class}' and section = '{$section}' and term1 < {$term_fees[$class][0]}";
-                            $term1_sql = "select sum({$term_fees[$class][1]} - term2) as term2_receivable from overall where class = '{$class}' and section = '{$section}' and term2 < {$term_fees[$class][1]}";
-                            $term1_sql = "select sum({$term_fees[$class][2]} - term3) as term3_receivable from overall where class = '{$class}' and section = '{$section}' and term3 < {$term_fees[$class][2]}";
+                            $term2_sql = "select sum({$term_fees[$class][1]} - term2) as term2_receivable from overall where class = '{$class}' and section = '{$section}' and term2 < {$term_fees[$class][1]}";
+                            $term3_sql = "select sum({$term_fees[$class][2]} - term3) as term3_receivable from overall where class = '{$class}' and section = '{$section}' and term3 < {$term_fees[$class][2]}";
                             $term1_res = $con->query($term1_sql);
                             $term2_res = $con->query($term2_sql);
                             $term3_res = $con->query($term3_sql);
@@ -486,7 +488,7 @@ if (isset($_POST["option"])) {
                             }
                             $total_receivable = array_sum($term_rec);
                             $grand_total[3] += $total_receivable;
-                            $tr = "
+                            $tr .= "
                                 <tr>
                                     <td>$sno</td>
                                     <td>$class</td>

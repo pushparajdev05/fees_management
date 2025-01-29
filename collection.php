@@ -1,6 +1,6 @@
 <?php
 include "./backend/db/collection/db_connection.php";
-$class_array = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+$class_array = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X","XIAC","XIDE", "XIIAC","XIIDE"];
 $class_out = [];
 $term = [];
 foreach($class_array as $value)
@@ -100,8 +100,10 @@ $json_term = json_encode($term);
                         <th>VIII</th>
                         <th>IX</th>
                         <th>X</th>
-                        <th>XI</th>
-                        <th>XII</th>
+                        <th>XIAC</th>
+                        <th>XIDE</th>
+                        <th>XIIAC</th>
+                        <th>XIIDE</th>
                     </tr>
                 </thead>     
                 <tbody>
@@ -126,8 +128,10 @@ $json_term = json_encode($term);
                         <td>{$row['VIII']}</td>
                         <td>{$row['IX']}</td>
                         <td>{$row['X']}</td>
-                        <td>{$row['XI']}</td>
-                        <td>{$row['XII']}</td>
+                        <td>{$row['XIAC']}</td>
+                        <td>{$row['XIDE']}</td>
+                        <td>{$row['XIIAC']}</td>
+                        <td>{$row['XIIDE']}</td>
                     </tr>";
                     }
                 }
