@@ -1,14 +1,5 @@
 <?php
 include "./backend/db/defaulters/db_connection.php";
-$class_array = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X","XIAC","XIDE", "XIIAC","XIIDE"];
-$class_out = [];
-foreach($class_array as $value)
-{
-    $sql = "select * from overall where class = '{$value}'";
-    $res = $con->query($sql);
-    $class_out["$value"] = $res->fetch_all();
-}
-$json_array_out = json_encode($class_out);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +8,7 @@ $json_array_out = json_encode($class_out);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/navbars.css">
     <link rel="stylesheet" href="./css/transfer/underline.css">
-    <link rel="stylesheet" href="./css/defaulter/defaulters.css">
+    <link rel="stylesheet" href="./css/transfer/transfer.css">
     <link rel="stylesheet" href="./css/defaulter/form_overall.css">
     <link rel="stylesheet" href="./css/defaulter/animation.css">
     <link rel="stylesheet" href="./asset/sweetalert/sweetalert2.min.css">
@@ -32,7 +23,7 @@ $json_array_out = json_encode($class_out);
     ?>
      <section id="overall_table_form">
         <?php
-        include "./component/form_overall.php";
+        include "./component/form_transfer.php";
         ?>
     </section>
     <section id="datatable">
@@ -132,20 +123,54 @@ $json_array_out = json_encode($class_out);
             <th>Name</th>
             <th>Class</th>
             <th>Section</th>
-            <th style="white-space: nowrap;">Term I</th>
-            <th style="white-space: nowrap;">Term II</th>
-            <th style="white-space: nowrap;">Term III</th>
-            <th style="white-space: nowrap;">Paid Date</th>
-            <th>ScholarShip</th>
-            <th>ScholarShip Amount</th>
-            <th style="white-space: nowrap;">Write Off</th>
-            <th>Total Receivable</th>
-            <th>Total Received</th>
-            <th>Balance receivable</th>
+            <th style="white-space: nowrap;">PassedOut</th>
+            <th>Pending</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody id="tbody1">
+        <?php
+                $i = 0;
+                $sql="select * from passedOut";
+                $res=$con->query($sql);
+                if($res->num_rows>0)
+                {
+                    while($row=$res->fetch_assoc())
+                    {	
+                        echo "<tr>
+                            <td>".++$i."</td>
+                            <td>{$row["admission"]}</td>
+                            <td style='white-space:nowrap;'>{$row["name"]}</td>
+                            <td style='width:130px;white-space:nowrap;'>{$row["class"]}</td>
+                            <td>{$row["section"]}</td>
+                            <td>{$row["passed_year"]}</td>
+                            <td>{$row["pending"]}</td>
+                            <td>
+                            <div id='action'>
+                                <button type='button' style='height:35px;width:70px;' class='download-btn pixel-corners delete' ad={$row['sno']}>
+                            <div class='button-content' style=''>
+                                <div class='svg-container'>
+                                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 700' height='24' widht='24' style='fill:white;margin-bottom:3px;margin-left:8px;'><path d='M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z'/></svg>
+                                </div>
+                                <div class='text-container' style='height:37px'>
+                                <div class='text'>Delete</div>
+                                </div> 
+                            </div>
+                            </button>
+                            <button typr='submit' style='height:35px;width:70px;' class='download-btn pixel-corners update' ad={$row['sno']}>
+                            <div class='button-content' style=''>
+                                <div class='svg-container'>
+                                    <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' style='fill: rgb(255, 255, 255);margin-bottom: 10px;'><path d='M11 15h2V9h3l-4-5-4 5h3z'></path><path d='M20 18H4v-7H2v7c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2v-7h-2v7z'></path></svg>
+                                </div>
+                                <div class='text-container' style='height:37px'>
+                                <div class='text'>Update</div>
+                                </div> 
+                            </div>
+                            </button>
+                            </div></td></tr>";
+                    }
+                }
+            ?>
     </tbody>
 </table> 
         </div>
@@ -160,15 +185,15 @@ $json_array_out = json_encode($class_out);
                 <thead id="defaulter_head">
                 </thead>
                 <tbody id="defaulter_body">
+                
                 </tbody>
             </table>
         </div>
             
     </div>
     <script src="./asset/sweetalert/sweetalert2.all.min.js"></script>
+    <script src="./javascript/basic_transfer.js"></script>
     <script src="./javascript/jquery-3.7.1.js"></script>
-    <script type="module" src="./javascript/overall.js"></script>
-    <script src="./javascript/overall_basic.js"></script>
     <script src="./datatable/javascript/datatable.js"></script>
     <script src="./datatable/javascript/buttons.dataTables.js"></script>
     <script src="./datatable/javascript/dataTables.buttons.js"></script>
@@ -176,8 +201,6 @@ $json_array_out = json_encode($class_out);
     <script src="./datatable/javascript/pdfmake.min.js"></script>
     <script src="./datatable/javascript/vfs_fonts.js"></script>
     <script src="./datatable/javascript/buttons.html5.min.js"></script>  
-    <script>
-        window.resultSet=<?php echo $json_array_out?>;
-    </script>
+    <script type="module" src="./javascript/transfer_data.js"></script>
 </body>
 </html>
