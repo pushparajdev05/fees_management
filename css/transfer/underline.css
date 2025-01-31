@@ -9,23 +9,23 @@
         width: 100%;
         
     }
-    ul li:nth-child(1)::after
+    ul li:nth-child(3)::after
     {
         width:0;
         
     }
-    ul li:nth-child(1):hover::after
+    ul li:nth-child(3):hover::after
     {
         
         width:100%;
     }
-    ul li:nth-child(4)::after
+    ul li:nth-child(1)::after
     {
        
         width:0;
         
     }
-    ul li:nth-child(4):hover::after
+    ul li:nth-child(1):hover::after
     {
         width:100%;
         
