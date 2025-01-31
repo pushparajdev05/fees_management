@@ -161,8 +161,8 @@ $(document).ready(function () {
                         let current_value;
                         if (res[0] == 0) {
                             current_value = table1.row(update_btn.parents("tr"));
+                            let ind = 3;
                             res[1].forEach(function (value, colIndex) {
-                                let ind = 2;
                                 table1.cell({ row: current_value.index(), column: (colIndex + ind) }).data(value);
                             });
                             table1.draw(false);
@@ -282,14 +282,16 @@ $(document).ready(function () {
                     const res = data["row"] ?? [null];
                     let current_value;
                     if (res[0] == 0) {
+                        console.log("the reponse of the cheque/Online data updation"+res[1]);
                         current_value = table2.row(update_btn.parents("tr"));
+                        let ind = 3;
                         res[1].forEach(function (value, colIndex) {
-                            let ind = 2;
-                            table1.cell({ row: current_value.index(), column: (colIndex + ind) }).data(value);
+                            table2.cell({ row: current_value.index(), column: (colIndex + ind) }).data(value);
                         });
                         table2.draw(false);
                     }
                     if (message[0] == 101) {
+                        console.log("message showing");
                         Toast.fire({
                             title: "Cheque/online Table",
                             html: `<p class='alert_content'>${message[1]}</p>`,
@@ -384,7 +386,6 @@ $(document).ready(function () {
 
                             }
                             $(btn).find(".text").text("Delete");
-                    
                         }
                     });
                 }
@@ -460,17 +461,17 @@ $(document).ready(function () {
         var row = $(this);
         if (select.getAttribute("key") == 0) {
             sno1 = row.closest("tr").find("td:eq(0)").text();
-            var admin = row.closest("tr").find("td:eq(1)").text();
+            var admin = row.closest("tr").find("td:eq(2)").text();
             $("#admin").val(admin);
             $("#admin").prop("readonly",true);
-            var name = row.closest("tr").find("td:eq(2)").text();
+            var name = row.closest("tr").find("td:eq(3)").text();
             $("#std").val(name);
-            var class1 = row.closest("tr").find("td:eq(3)").text();
+            var class1 = row.closest("tr").find("td:eq(4)").text();
             $("#class").val(class1);
             class_trigger.dispatchEvent(change_event);
-            var section = row.closest("tr").find("td:eq(4)").text();
+            var section = row.closest("tr").find("td:eq(5)").text();
             $("#section").val(section);
-            var mode = row.closest("tr").find("td:eq(5)").text();
+            var mode = row.closest("tr").find("td:eq(6)").text();
             const mode_array = mode.split(",");
             $("#type").val(mode_array);
             $("#type").prop("disabled",true);
@@ -481,10 +482,10 @@ $(document).ready(function () {
             //TODO:term fees checking
             term_fees(mode_array,row);
 
-            const amount = row.closest("tr").find("td:eq(7)").text();
+            const amount = row.closest("tr").find("td:eq(8)").text();
             $("#amt").val(amount);
             console.log(amount);
-            today = row.closest("tr").find("td:eq(8)").text();
+            today = row.closest("tr").find("td:eq(9)").text();
             const payment = $("#payment");
             payment.val("0");
             payment.prop("disabled", true);
@@ -494,17 +495,17 @@ $(document).ready(function () {
         }
         else {
             sno2 = row.closest("tr").find("td:eq(0)").text();
-            var admin = row.closest("tr").find("td:eq(1)").text();
+            var admin = row.closest("tr").find("td:eq(2)").text();
             $("#admin").val(admin);
             $("#admin").prop("readonly",true);
-            var name = row.closest("tr").find("td:eq(2)").text();
+            var name = row.closest("tr").find("td:eq(3)").text();
             $("#std").val(name);
-            var class1 = row.closest("tr").find("td:eq(3)").text();
+            var class1 = row.closest("tr").find("td:eq(4)").text();
             $("#class").val(class1);
             class_trigger.dispatchEvent(change_event);
-            var section = row.closest("tr").find("td:eq(4)").text();
+            var section = row.closest("tr").find("td:eq(5)").text();
             $("#section").val(section);
-            var mode = row.closest("tr").find("td:eq(5)").text();
+            var mode = row.closest("tr").find("td:eq(6)").text();
             const mode_array = mode.split(",");
             $("#type").val(mode_array );
             $("#type").prop("disabled",true);
@@ -515,9 +516,9 @@ $(document).ready(function () {
             //TODO:term fees checking
             term_fees(mode_array,row);
 
-            var amt = row.closest("tr").find("td:eq(7)").text();
+            var amt = row.closest("tr").find("td:eq(8)").text();
             $("#amt").val(amt);
-            today = row.closest("tr").find("td:eq(8)").text();
+            today = row.closest("tr").find("td:eq(9)").text();
             const payment = $("#payment");
             payment.val("1");
             payment.prop("disabled", true);

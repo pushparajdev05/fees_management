@@ -132,6 +132,7 @@ if (isset($_POST["decide"])) {
                     $id = $stmt->insert_id;
                     $table_tr = [
                         $insert_sno1,
+                        $id,
                         $admission,
                         $name,
                         $class,
@@ -205,6 +206,7 @@ if (isset($_POST["decide"])) {
                 $id = $stmt->insert_id;
                 $table_tr = [
                     $insert_sno1,
+                    $id,
                     $admission,
                     $name,
                     $class,
