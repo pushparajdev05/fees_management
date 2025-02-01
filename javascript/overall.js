@@ -232,7 +232,6 @@ $(document).ready(function () {
     $("#overall_form_data").submit(function (e) {
         e.preventDefault();
         var decide = $("#decide").val();
-        const lastElement = document.getElementById("tbody1").lastElementChild;
         const overall_data = $("#overall_form_data").serializeArray();
         const input_date = document.getElementById("paid_date").value;
         if (input_date != "")
@@ -268,17 +267,16 @@ $(document).ready(function () {
                     console.log(res);
                     console.log("the decision"+decide);
                     const selected_option = $("#class_types").val();
-                    const class_var = res[1][4];
+                    const class_var = res[1][3];
                     console.log("class is " + class_var);
                     if (decide == "0") {
                         console.log(selected_option == class_var);
                         const current_row = res[1].slice();
-                        current_row.splice(15, 1);
-                        current_row.splice(1, 1);
+                        current_row.splice(14, 1);
                         console.log("the current array is" + current_row);
                         if (selected_option == class_var) {
                         console.log("after splice"+current_row);
-                            table1.row.add(res[1].slice(1)).draw(false);
+                            table1.row.add(res[1]).draw(false);
                         }
                         window.resultSet[class_var].push(current_row);
                         Toast.fire({
@@ -292,12 +290,11 @@ $(document).ready(function () {
                         $("#overall_form_data").trigger("reset");
                     } else {
                         const current_row = res[1].slice();
-                        current_row.splice(15, 1);
-                        current_row.splice(1, 1);
+                        current_row.splice(14, 1);
                         console.log("the current array is" + current_row);
                         if (selected_option == class_var) {
                             console.log("after the splice" + res[1]);
-                            table1.row(update_btn.parents("tr")).data(res[1].slice(1)).draw(false);
+                            table1.row(update_btn.parents("tr")).data(res[1]).draw(false);
                             window.resultSet[selected_option][index] = current_row;
                             console.log(current_row);
                         }
@@ -476,6 +473,7 @@ sort_in_class.addEventListener("change", function () {
     sorted_data.forEach((arr, index) => {
         sno += 1;
         let newRow = [sno,
+            arr[0],
             arr[1],
             arr[2],
             arr[3],
@@ -489,7 +487,6 @@ sort_in_class.addEventListener("change", function () {
             arr[11],
             arr[12],
             arr[13],
-            arr[14],
             `<div id='action'>
                             <button type='button' style='height:35px;width:70px;' class='download-btn pixel-corners delete' ad=${arr[0]} index=${index}>
                         <div class='button-content' style=''>

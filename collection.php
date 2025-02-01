@@ -11,7 +11,7 @@ foreach($class_array as $value)
     $class_out["$value"] = $res->fetch_all(MYSQLI_ASSOC);
 }
 $term_sql = "select types from fees_table where types like 'term%'";
-$overall_admission = "select admission from overall order by sno";
+$overall_admission = "select admission from overall order by admission";
 $overall_sql = "select admission,name,class,section from overall";
 $res_admission = $con->query($overall_admission);
 $res_overall_sql = $con->query($overall_sql);
