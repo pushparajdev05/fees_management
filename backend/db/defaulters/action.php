@@ -15,15 +15,19 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && isset($_POST["decide"])) {
     $scholarship_amt = trim( $_POST["scholarship_amt"]);
     $write_off = trim( $_POST["write_off"]);
     $pending = trim( $_POST["pending"]);
-    $total_receivable = trim( $_POST["total_receivable"]);
-
+    $fees_total_sql = "select sum($class) as total_receivable from fees_table where types like 'term%'";
+    $result_fees_total = $con->query($fees_total_sql);
+    $total_receivable = $result_fees_total->fetch_assoc()["total_receivable"] ?? 0;
+    $total_receivable += $pending;
+    
     if ($decide == "0") {
         $sno = ((int) $index + 1);
         $total_received = $term1 + $term2 + $term3;
-        $balance_receivable = abs($pending + $total_receivable - $total_received -$write_off - $scholarship_amt);
-        $sql = "INSERT INTO overall (admission,name,class,section,term1,term2,term3,date,scholarship,scholarship_amount,pending,writeoff,total_receivable,total_received,balance_receivable) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $balance_receivable = abs($total_receivable - $total_received -$write_off - $scholarship_amt);
+        $sql = "INSERT INTO overall (admission,name,class,section,term1,term2,term3,date,scholarship,scholarship_amount,pending,writeoff,total_receivable,total_received,balance_receivable) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             $stmt = $con->prepare($sql);
+            echo $con->error;
             $stmt->bind_param("isssiiissiiiiii", $admission, $name, $class, $section, $term1, $term2, $term3, $paid_date, $scholarship,$scholarship_amt,$pending, $write_off, $total_receivable, $total_received, $balance_receivable);
             if ($stmt->execute()) {
                 $id = mysqli_insert_id($con);
@@ -83,7 +87,7 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && isset($_POST["decide"])) {
         $sno = $_POST["sno"];
         $total_received = $term1 + $term2 + $term3;
         // echo "update";
-        $balance_receivable = abs($pending + $total_receivable - $total_received - $write_off - $scholarship_amt);
+        $balance_receivable = abs($total_receivable - $total_received - $write_off - $scholarship_amt);
         $sql = "update overall set admission = ? ,name = ? ,class = ? ,section = ? ,term1 = ? ,term2 = ? ,term3 = ? ,date = ? ,scholarship = ?,scholarship_amount = ? ,writeoff = ?,pending= ?  ,total_receivable = ? ,total_received = ? ,balance_receivable = ?  where admission = ?";
 
         try{

@@ -272,7 +272,8 @@ $(document).ready(function () {
                     if (decide == "0") {
                         console.log(selected_option == class_var);
                         const current_row = res[1].slice();
-                        current_row.splice(15, 1);
+                        current_row.splice(16, 1);
+                        current_row.splice(0, 1);
                         console.log("the current array is" + current_row);
                         if (selected_option == class_var) {
                         console.log("after splice"+current_row);
@@ -290,7 +291,8 @@ $(document).ready(function () {
                         $("#overall_form_data").trigger("reset");
                     } else {
                         const current_row = res[1].slice();
-                        current_row.splice(15, 1);
+                        current_row.splice(16, 1);
+                        current_row.splice(0, 1);
                         console.log("the current array is" + current_row);
                         if (selected_option == class_var) {
                             console.log("after the splice" + res[1]);
@@ -426,8 +428,6 @@ $(document).ready(function () {
         $("#pending").val(pending);
         var write_off = row.closest("tr").find("td:eq(12)").text();
         $("#write_off").val(write_off);
-        var total_receivable = row.closest("tr").find("td:eq(13)").text();
-        $("#total_receivable").val(total_receivable);
         $('#overall_table_form').css('display', 'flex');
 
     });

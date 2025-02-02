@@ -55,7 +55,7 @@ if($uploaded==true)
             $new_fees = false;
             $values = [];
             $values_old = [];
-            $insertSql = "INSERT INTO overall (admission,name,class,section,term1,term2,term3,date,scholarship,scholarship_amount,writeoff,total_receivable,total_received,balance_receivable) VALUES ";
+            $insertSql = "INSERT INTO overall (admission,name,class,section,term1,term2,term3,date,scholarship,scholarship_amount,pending,writeoff,total_receivable,total_received,balance_receivable) VALUES ";
             while (($data = fgetcsv($handle, 1200, ",")) !== FALSE) 
             {
                 $admission = (int)trim($data[0]);
@@ -71,7 +71,8 @@ if($uploaded==true)
                 $date = trim($data[7]);
                 $scholar = strtolower(trim($data[8]));
                 $scholar_amt = trim($data[9]);
-                $writeoff = trim($data[10]);
+                $pending = trim($data[10]);
+                $writeoff = trim($data[11]);
                 $total_receivable = $fees_term_total["$class"] ?? 0;
                 $term1 = trim($data[4]);
                 $term2 = trim($data[5]);
@@ -92,6 +93,10 @@ if($uploaded==true)
                 {
                     $writeoff = 0;
                 }
+                if(empty($pending) || !(is_int((int)$pending)))
+                {
+                    $pending = 0;
+                }
                 if(empty($scholar_amt) || !(is_int((int)$scholar_amt)))
                 {
                     $scholar_amt = 0;
@@ -108,9 +113,10 @@ if($uploaded==true)
                 {
                     $term3 = 0;
                 }
+                $total_receivable += $pending;
                 $total_received = $term1 + $term2 + $term3;
                 $balance_receivable = abs($total_receivable - $total_received - $writeoff - $scholar_amt);
-                $values[] = "($admission,'$name','$class','$section',$term1,$term2,$term3,'$date','$scholar',$scholar_amt,$writeoff,$total_receivable,$total_received,$balance_receivable)";
+                $values[] = "($admission,'$name','$class','$section',$term1,$term2,$term3,'$date','$scholar',$scholar_amt,$pending,$writeoff,$total_receivable,$total_received,$balance_receivable)";
             }
             $cat_values = implode(", ", $values);
             // echo $cat_values;

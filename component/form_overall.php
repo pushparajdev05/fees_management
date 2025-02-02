@@ -126,14 +126,6 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col1">
-                    <label for="total_receivable">Total Receivable</label>
-                </div>  
-                <div class="col2">
-                    <input type="number" id="total_receivable" name="total_receivable">
-                </div>
-            </div>
-            <div class="row">
                 <div class="overall_save">
                     <?php
                     include "./component/save_btn.html";
