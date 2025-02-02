@@ -11,7 +11,7 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && isset($_POST["decide"])) {
     if ($decide == "0") {
         $index = trim($_POST["arr_index"]);
         $sno = ((int) $index + 1);
-        $sql = "INSERT INTO passedOut (admission,name,class,section,passed_year,pending) VALUES(?,?,?,?,?,?)";
+        $sql = "INSERT INTO passedout (admission,name,class,section,passed_year,pending) VALUES(?,?,?,?,?,?)";
         try {
             $stmt = $con->prepare($sql);
             $stmt->bind_param("isssii", $admission, $name, $class, $section, $year, $pending);
@@ -62,7 +62,7 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && isset($_POST["decide"])) {
         }
     } else {
         $sno = $_POST["sno"];
-        $sql = "update passedOut set admission = ? ,name = ? ,class = ? ,section = ? ,passed_year = ? ,pending = ? where sno = ?";
+        $sql = "update passedout set admission = ? ,name = ? ,class = ? ,section = ? ,passed_year = ? ,pending = ? where sno = ?";
 
         try{
         $stmt=$con->prepare($sql);

@@ -138,6 +138,7 @@ $json_array_out = json_encode($class_out);
             <th style="white-space: nowrap;">Paid Date</th>
             <th>ScholarShip</th>
             <th>ScholarShip Amount</th>
+            <th style="white-space: nowrap;">Pending</th>
             <th style="white-space: nowrap;">Write Off</th>
             <th>Total Receivable</th>
             <th>Total Received</th>

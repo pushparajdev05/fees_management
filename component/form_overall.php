@@ -111,6 +111,14 @@
             </div>
             <div class="row">
                 <div class="col1">
+                    <label for="pending">Pending</label>
+                </div>
+                <div class="col2">
+                    <input type="number" id="pending" name="pending" value="0" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col1">
                     <label for="write_off">Write Off</label>
                 </div>
                 <div class="col2">

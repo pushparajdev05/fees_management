@@ -1,0 +1,59 @@
+<?php
+include "./db_connection.php";
+$class_arr = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X","XIAC","XIDE", "XIIAC","XIIDE"];
+$higher_class = [ ["XIIAC","XIIDE"],["XIAC","XIDE"]];
+$class_data = [];
+$index=1;
+for($j = 0; $j < count($class_arr); $j++)
+{
+    $class=$class_arr[$j];
+    $update_sql1 = "update overall set class = '$index' where class='$class'";
+    $select_sql1 = "select * from overall where class ='$class'";
+$resultset1 = $con->query($select_sql1);
+    if($resultset1->num_rows > 0)
+    {
+        if($j <12)
+        {
+            $class_data[$class] = $resultset1->fetch_all(MYSQLI_ASSOC);
+            if($con->query($update_sql1))
+            {
+                echo "<p style='font-size:18px'>successfully indexed</p>";
+            }
+            else{
+                echo "<p style='font-size:18px'>failed to indexing..</p>";
+            }
+        }
+    }
+    $index++;
+}
+for ($i = 0; $i < 12; $i++) {
+    $class_index = $i + 1;
+    if ($class_index == 12) {
+        $update_sql2 = "update overall set class = 'XI' where class='$class_index'";
+    } else {
+        $update_sql2 = "update overall set class = '{$class_arr[$class_index]}' where class='$class_index'";
+
+    }
+    if ($con->query($update_sql1)) {
+        echo "<p style='font-size:18px'>successfully transferred student from LKG to X</p>";
+    } else {
+        echo "<p style='font-size:18px'>failed to transfer student from LKg to X</p>";
+    }
+}
+
+$passed_year= date("Y");
+for ($a = 0; $a < count($higher_class[0]); $a++) {
+    $higher = $higher_class[0][$a];
+    $higher_sql = "insert into passedout (admission,name,class,section,passed_year,pending) select admission,name,class,section, sum($passed_year + 0) as passed_year ,pending from overall where class = '$higher' ";
+    if ($con->query($higher_sql)) {
+        echo "<p style='font-size:18px'>successfully transferred student from $higher to Passed Out</p>";
+        $del_sql = "delete from overall where class= '$higher'";
+        if($con->query($del_sql))
+        {
+            $higher2 = $higher_class[1][$a];
+            $higher_update = "update overall set class = '$higher' where class= '$higher2'";
+        }
+    }
+}
+
+?>

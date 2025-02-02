@@ -272,7 +272,7 @@ $(document).ready(function () {
                     if (decide == "0") {
                         console.log(selected_option == class_var);
                         const current_row = res[1].slice();
-                        current_row.splice(14, 1);
+                        current_row.splice(15, 1);
                         console.log("the current array is" + current_row);
                         if (selected_option == class_var) {
                         console.log("after splice"+current_row);
@@ -290,7 +290,7 @@ $(document).ready(function () {
                         $("#overall_form_data").trigger("reset");
                     } else {
                         const current_row = res[1].slice();
-                        current_row.splice(14, 1);
+                        current_row.splice(15, 1);
                         console.log("the current array is" + current_row);
                         if (selected_option == class_var) {
                             console.log("after the splice" + res[1]);
@@ -422,9 +422,11 @@ $(document).ready(function () {
         $("#scholarship").val(scholarship);
         var scholarship_amt = row.closest("tr").find("td:eq(10)").text();
         $("#scholarship_amt").val(scholarship_amt);
-        var write_off = row.closest("tr").find("td:eq(11)").text();
+        var pending = row.closest("tr").find("td:eq(11)").text();
+        $("#pending").val(pending);
+        var write_off = row.closest("tr").find("td:eq(12)").text();
         $("#write_off").val(write_off);
-        var total_receivable = row.closest("tr").find("td:eq(12)").text();
+        var total_receivable = row.closest("tr").find("td:eq(13)").text();
         $("#total_receivable").val(total_receivable);
         $('#overall_table_form').css('display', 'flex');
 
@@ -487,6 +489,7 @@ sort_in_class.addEventListener("change", function () {
             arr[11],
             arr[12],
             arr[13],
+            arr[14],
             `<div id='action'>
                             <button type='button' style='height:35px;width:70px;' class='download-btn pixel-corners delete' ad=${arr[0]} index=${index}>
                         <div class='button-content' style=''>

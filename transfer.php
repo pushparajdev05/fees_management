@@ -83,7 +83,7 @@ include "./backend/db/defaulters/db_connection.php";
     <tbody id="tbody1">
         <?php
                 $i = 0;
-                $sql="select * from passedOut";
+                $sql="select * from passedout";
                 $res=$con->query($sql);
                 if($res->num_rows>0)
                 {
