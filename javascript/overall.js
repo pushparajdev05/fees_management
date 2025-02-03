@@ -352,40 +352,48 @@ $(document).ready(function () {
         var ad = $(this).attr("ad");
         index = $(this).attr("index");
         let btn = $(this);
-        console.log('delete');
-        $.ajax({
-                type: 'POST',
-                url: './backend/db/defaulters/delete.php',
-                data: { admin: ad },
-                beforeSend: function () {
-                    $(btn).find(".text").text("Deleting...");
-                },
-            success: function (res) {
-                const taken = parseInt(res);
-                if (taken == 0) {
-                    table1.row(btn.parents('tr')).remove().draw(false);
-                    window.resultSet[selected_option].splice(index, 1);
-                    Toast.fire({
-                        html: `<p class='alert_content'>The data is deleted in overall table</p>`,
-                        icon: "success",
-                        customClass: {
-                            timerProgressBar: 'bar_success',
-                            icon: "icon_success"
+        Swal.fire({
+            title: "Are you sure delete the transaction",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: './backend/db/defaulters/delete.php',
+                    data: { admin: ad },
+                    beforeSend: function () {
+                        $(btn).find(".text").text("Deleting...");
+                    },
+                    success: function (res) {
+                        const taken = parseInt(res);
+                        if (taken == 0) {
+                            table1.row(btn.parents('tr')).remove().draw(false);
+                            window.resultSet[selected_option].splice(index, 1);
+                            Toast.fire({
+                                html: `<p class='alert_content'>The data is deleted in overall table</p>`,
+                                icon: "success",
+                                customClass: {
+                                    timerProgressBar: 'bar_success',
+                                    icon: "icon_success"
+                                }
+                            });
                         }
-                    });
-                }
-                else {
-                    Toast.fire({
-                        html: `<p class='alert_content'>The data is not deleted in overall table</p>`,
-                        icon: "error",
-                        customClass: {
-                            timerProgressBar: 'bar_error',
-                            icon: "icon_error"
+                        else {
+                            Toast.fire({
+                                html: `<p class='alert_content'>The data is not deleted in overall table</p>`,
+                                icon: "error",
+                                customClass: {
+                                    timerProgressBar: 'bar_error',
+                                    icon: "icon_error"
+                                }
+                            });
                         }
-                    });
-                }
-                }
-            });
+                    }
+                });
+            }
+        });
     });
     $("body").on("click", ".update", function (e) {
         e.preventDefault();

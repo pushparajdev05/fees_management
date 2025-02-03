@@ -17,6 +17,20 @@ var table1 = new DataTable('#myTable1',
         },]
     }
 );
+var table2 = new DataTable('#defaulters_list',
+    {
+        ordering: false,
+        pageLength: -1,
+        layout:
+        {
+            topStart: {
+                buttons: ['excel']
+            },
+            bottomEnd: null,
+            bottomStart: null
+        },
+    }
+);
 $(document).ready(function () {
     var update_sno = 0;
     var update_btn;
@@ -100,37 +114,45 @@ $(document).ready(function () {
         e.preventDefault();
         var ad = $(this).attr("ad");
         let btn = $(this);
-        console.log('delete');
-        $.ajax({
-            type: 'POST',
-            url: './backend/db/transfer/delete.php',
-            data: { admin: ad },
-            beforeSend: function () {
-                $(btn).find(".text").text("Deleting...");
-            },
-            success: function (res) {
-                const taken = parseInt(res);
-                if (taken == 0) {
-                    table1.row(btn.parents('tr')).remove().draw(false);
-                    Toast.fire({
-                        html: `<p class='alert_content'>The data is deleted in overall table</p>`,
-                        icon: "success",
-                        customClass: {
-                            timerProgressBar: 'bar_success',
-                            icon: "icon_success"
+        Swal.fire({
+            title: "Are you sure delete the record",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: './backend/db/transfer/delete.php',
+                    data: { admin: ad },
+                    beforeSend: function () {
+                        $(btn).find(".text").text("Deleting...");
+                    },
+                    success: function (res) {
+                        const taken = parseInt(res);
+                        if (taken == 0) {
+                            table1.row(btn.parents('tr')).remove().draw(false);
+                            Toast.fire({
+                                html: `<p class='alert_content'>The data is deleted in overall table</p>`,
+                                icon: "success",
+                                customClass: {
+                                    timerProgressBar: 'bar_success',
+                                    icon: "icon_success"
+                                }
+                            });
                         }
-                    });
-                }
-                else {
-                    Toast.fire({
-                        html: `<p class='alert_content'>The data is not deleted in overall table</p>`,
-                        icon: "error",
-                        customClass: {
-                            timerProgressBar: 'bar_error',
-                            icon: "icon_error"
+                        else {
+                            Toast.fire({
+                                html: `<p class='alert_content'>The data is not deleted in overall table</p>`,
+                                icon: "error",
+                                customClass: {
+                                    timerProgressBar: 'bar_error',
+                                    icon: "icon_error"
+                                }
+                            });
                         }
-                    });
-                }
+                    }
+                });
             }
         });
     });
@@ -156,6 +178,94 @@ $(document).ready(function () {
         $("#pending").val(pending);
         $('#overall_table_form').css('display', 'flex');
 
+    });
+    const defaults_close = document.querySelector("#defaults_close svg");
+    const defaulter_table = document.getElementById("defaulter_table");
+    defaults_close.addEventListener("click", (e) => {
+        e.preventDefault();
+        defaulter_table.style.display = "none";
+        table2.rows().remove();
+        console.log("removed");
+    });
+    $("#transfer_btn").click(function () {
+        
+    });
+    $("#transaction_btn").click(function () {
+        const year_ = $("#pass_year").val();
+        if (year_ != "") {
+            if (year_.length < 5) {
+                $.ajax(
+                    {
+                        url: "./backend/db/transfer/history_transaction.php",
+                        type: "post",
+                        data: { year: year_ },
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $("#transaction_btn").find(".text").val("Loading..");
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            if (res[0] == 200) {
+                                table2.destroy();
+                                $("#default_heading").text("Total Fee Collections and Defaulters");
+                                $("#defaulter_head").html(res[1]);
+                                $("#defaulter_body").html(res[2]);
+                                table2 = new DataTable('#defaulters_list',
+                                    {
+                                        ordering: false,    
+                                        pageLength: -1,
+                                        layout:
+                                        {
+                                            topStart: {
+                                                buttons: ['excel']
+                                            },
+                                            bottomEnd: null,
+                                            bottomStart: null
+                                        },
+                                    }
+                                );
+                                $("#defaulter_table").css("display", "block");
+                            }
+                            else {
+                                Toast.fire({
+                                    html: `<p class='alert_content'>${res[1]}</p>`,
+                                    icon: "error",
+                                    customClass: {
+                                        timerProgressBar: 'bar_error',
+                                        icon: "icon_error"
+                                    }
+                                });
+                            }
+                        }
+                    });
+                
+            }
+            else {
+                
+                Toast.fire({
+                    position: "top",
+                    html: `<p class='alert_content'>Kindly Enter year with four digits</p>`,
+                    icon: "warning",
+                    customClass: {
+                        timerProgressBar: 'bar_warning',
+                        icon: "icon_warning"
+                    }
+                });
+            }
+            
+        }
+        else {
+            Toast.fire({
+                position: "top",
+                html: `<p class='alert_content'>kindly Enter Year of the transaction</p>`,
+                icon: "warning",
+                customClass: {
+                    timerProgressBar: 'bar_warning',
+                    icon: "icon_warning"
+                }
+            });
+            
+        }
     });
 
 });
