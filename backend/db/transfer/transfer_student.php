@@ -1,6 +1,6 @@
 <?php
 include "./db_connection.php";
-require "vendor/autoload.php";
+require "../../../vendor/autoload.php";
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -12,7 +12,7 @@ function transfer_student($con, $class_arr)
     $index = 1;
     $class_data = [];
     $higher_class = [["XIIAC", "XIIDE"], ["XIAC", "XIDE"]];
-    $select_sql1 = "select * from overall where";
+    $select_sql1 = "select * from overall";
     $resultset1 = $con->query($select_sql1);
     if ($resultset1->num_rows > 0) {
         $class_data = $resultset1->fetch_all(MYSQLI_ASSOC);
@@ -22,9 +22,9 @@ function transfer_student($con, $class_arr)
         $update_sql1 = "update overall set class = '$index' where class='$class'";
         if ($j < 12) {
             if ($con->query($update_sql1)) {
-                echo "<p style='font-size:18px'>successfully indexed</p>";
+                // echo "<p style='font-size:18px'>successfully indexed</p>";
             } else {
-                echo "<p style='font-size:18px'>failed to indexing..</p>";
+                // echo "<p style='font-size:18px'>failed to indexing..</p>";
                 return [false, []];
             }
         }
@@ -39,9 +39,9 @@ function transfer_student($con, $class_arr)
 
         }
         if ($con->query($update_sql2)) {
-            echo "<p style='font-size:18px'>successfully transferred student from LKG to X</p>";
+            // echo "<p style='font-size:18px'>successfully transferred student from LKG to X</p>";
         } else {
-            echo "<p style='font-size:18px'>failed to transfer student from LKg to X</p>";
+            // echo "<p style='font-size:18px'>failed to transfer student from LKg to X</p>";
             return [false, []];
 
         }
@@ -52,20 +52,20 @@ function transfer_student($con, $class_arr)
         $higher = $higher_class[0][$a];
         $higher_sql = "insert into passedout (admission,name,class,section,passed_year,pending) select admission,name,class,section,$passed_year as passed_year ,pending from overall where class = '$higher' ";
         if ($con->query($higher_sql)) {
-            echo "<p style='font-size:18px'>successfully transferred student from $higher to Passed Out</p>";
+            // echo "<p style='font-size:18px'>successfully transferred student from $higher to Passed Out</p>";
             $del_sql = "delete from overall where class= '$higher'";
             if ($con->query($del_sql)) {
                 $higher2 = $higher_class[1][$a];
                 $higher_update = "update overall set class = '$higher' where class= '$higher2'";
                 if ($con->query($higher_update)) {
-                    echo "<p style='font-size:18px'>student are transferred from $higher2 to $higher</p>";
+                    // echo "<p style='font-size:18px'>student are transferred from $higher2 to $higher</p>";
                 } else {
-                    echo "<p style='font-size:18px'>failed to transfer the student from $higher2 to $higher</p>";
+                    // echo "<p style='font-size:18px'>failed to transfer the student from $higher2 to $higher</p>";
                     return [false, []];
                 }
             }
         } else {
-            echo "<p style='font-size:18px'>falied to tranfer XII student to passed out table</p>";
+            // echo "<p style='font-size:18px'>falied to tranfer XII student to passed out table</p>";
             return [false, []];
         }
     }
@@ -75,36 +75,42 @@ function history_copy($con)
 {
     $passed_year = date("Y");
     $data = [];
-    $create_history_sql = "create table {$passed_year}_ (admission mediumint,name text,class text,section text,type text,amount text,total mediumint,date varchar(12),mode text)";
-    if ($con->query($create_history_sql)) {
-        $mode = ["cash", "cheque"];
-        foreach ($mode as $value) {
-            $copy_transaction_sql = "insert into {$passed_year}_ (admission,name,class,section,type,amount,total,date,mode) select admission,name,class,section,type,amount,total,date,'$value' as mode from $value ";
-            if ($con->query($copy_transaction_sql)) {
-                echo "<p style='font-size:18px'>the transaction of $value copied to the maintance history table</p>";
-            } else {
-                echo "<p style='font-size:18px'>Failed to copy the $value to the maintance history table</p>";
-                return [false,$data];
-            }
-            $history_sql = "select * from {$passed_year}_";
-            $result_history = $con->query($history_sql);
-            if($result_history->num_rows > 0)
+    $table_sql = "show tables like '{$passed_year}_'";
+    $table_result = $con->query($table_sql);
+    if ($table_result->num_rows == 0) {
+        $create_history_sql = "create table {$passed_year}_ (admission mediumint,name text,class text,section text,type text,amount text,total mediumint,date varchar(12),mode text)";
+        if ($con->query($create_history_sql)) {
+            // echo "<p style='font-size:18px'>successfully created a table for $passed_year to store the transaction</p>";
+        } else {
+            // echo "<p style='font-size:18px'>Failed to create a table for $passed_year to store the transaction</p>";
+            return [false, $data];
+        }
+    }
+    $mode = ["cash", "cheque_online"];
+    foreach ($mode as $value) {
+        $copy_transaction_sql = "insert into {$passed_year}_ (admission,name,class,section,type,amount,total,date,mode) select admission,name,class,section,type,amount,total,date,'$value' as mode from $value ";
+        if ($con->query($copy_transaction_sql)) {
+            $del_transaction_sql = "delete from $value";
+            if($con->query($del_transaction_sql))
             {
-                $data = $result_history->fetch_all(MYSQLI_ASSOC);
+                // echo "<p style='font-size:18px'>the transaction of $value copied to the maintance history table</p>";
             }
+        } else {
+            // echo "<p style='font-size:18px'>Failed to copy the $value to the maintance history table</p>";
+            return [false, $data];
         }
-        $created_date = date("d/m/Y");
-        $transaction_detail_sql = "insert into transfer_details(table_name,date) values({$passed_year}_,$created_date)";
-        if ($con->query($transaction_detail_sql)) {
-            echo "<p style='font-size:18px'>the copied transaction's futher details are stored</p>";
+        $history_sql = "select * from {$passed_year}_";
+        $result_history = $con->query($history_sql);
+        if ($result_history->num_rows > 0) {
+            $data = $result_history->fetch_all(MYSQLI_ASSOC);
         }
     }
-    else
-    {
-        echo "<p style='font-size:18px'>Failed to create a table for $passed_year to store the transaction</p>";
-        return [false,$data];
+    $created_date = date("d/m/Y");
+    $transaction_detail_sql = "insert into transfer_details(table_name,date) values('{$passed_year}_','$created_date')";
+    if ($con->query($transaction_detail_sql)) {
+        // echo "<p style='font-size:18px'>the copied transaction's futher details are stored</p>";
     }
-    return [true,$data];
+    return [true, $data];
 }
 function addDataToSheet($spreadsheet, $sheetIndex, $sheetName, $data)
 {
@@ -140,12 +146,12 @@ function addDataToSheet($spreadsheet, $sheetIndex, $sheetName, $data)
 // transfer student from LKG to UKG
 $transfer_ = transfer_student($con,$class_arr);
 $save_decision = $transfer_[0];
-$class_data = $transfer[1];
+$class_data = $transfer_[1];
 
 // copy the transaction of the year to year table
 $history_ = history_copy($con);
 $save_decision = $history_[0];
-$history_data = $history[1];
+$history_data = $history_[1];
 if($save_decision)
 {    // Create a new spreadsheet
 $spreadsheet = new Spreadsheet();
@@ -156,7 +162,7 @@ $spreadsheet = new Spreadsheet();
         $filePath = './overall_data.xlsx';
         // Create a writer and save the file
         $writer = new Xlsx($spreadsheet);
-        if(file_exists($file_path))
+        if(file_exists($filePath))
         {
             if(unlink($filePath))
             {
@@ -169,11 +175,14 @@ $spreadsheet = new Spreadsheet();
             $con->commit();
 
         }
+                echo json_encode([200, "The students are transferred to next year and transactions of this year are copied"]);
     }
     else
     {
-        echo "<p style='font-size:18px'> Failed to download the excel sheet data for overall and history transaction</p>";
+        // echo "<p style='font-size:18px'> Failed to download the excel sheet data for overall and history transaction</p>";
         $con->rollback();
+        echo json_encode([404, "The students are not transferred to next year and transactions of this year are not copied"]);
+
     }
 // Function to add data to a sheet
 
@@ -181,6 +190,7 @@ $spreadsheet = new Spreadsheet();
 else
 {
     $con->rollback();
+    echo json_encode([404, "The students are not transferred to next year and transactions of this year are not copied"]);
 }
 
 ?>

@@ -188,7 +188,50 @@ $(document).ready(function () {
         console.log("removed");
     });
     $("#transfer_btn").click(function () {
-        
+        Swal.fire({
+            title: "Are you sure to transfer student to next year",
+            showCancelButton: true,
+            confirmButtonText: "Transfer",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax(
+                    {
+                        url: "./backend/db/transfer/transfer_student.php",
+                        type: "post",
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $("#transfer_btn").find(".text").val("Loading..");
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            if (res[0] == 200) {
+                                Toast.fire({
+                                    html: `<p class='alert_content'>${res[1]}</p>`,
+                                    icon: "success",
+                                    customClass: {
+                                        timerProgressBar: 'bar_success',
+                                        icon: "icon_success"
+                                    }
+                                });
+                                location.href = './backend/db/transfer/overall_data.xlsx';
+                                console.log("click anchor");
+                                
+                            }
+                            else {
+                                Toast.fire({
+                                    html: `<p class='alert_content'>${res[1]}</p>`,
+                                    icon: "error",
+                                    customClass: {
+                                        timerProgressBar: 'bar_error',
+                                        icon: "icon_error"
+                                    }
+                                });
+                            }
+                        }
+                    });
+            }
+        });
     });
     $("#transaction_btn").click(function () {
         const year_ = $("#pass_year").val();

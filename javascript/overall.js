@@ -228,6 +228,53 @@ $(document).ready(function () {
             }
         );
     });
+    $("#clear_").click(function () {
+        const class_clear = $("#class_types").val();
+        Swal.fire({
+            title: `Are you sure to clear ${class_clear} class in table `,
+            showCancelButton: true,
+            confirmButtonText: "Clear",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax(
+                    {
+                        url: "./backend/db/defaulters/clear_class.php",
+                        type: "post",
+                        data: {class:class_clear},
+                        beforeSend: function () {
+                            $("#transfer_btn").find(".text").val("Loading..");
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            const taken = parseInt(res);
+                            if (taken == 0) {
+                                window.resultSet[class_clear] = [];
+                                table1.clear().draw();
+                                Toast.fire({
+                                    html: `<p class='alert_content'>Records of ${class_clear} class cleared in overall table</p>`,
+                                    icon: "success",
+                                    customClass: {
+                                        timerProgressBar: 'bar_success',
+                                        icon: "icon_success"
+                                    }
+                                });
+                            }
+                            else {
+                                Toast.fire({
+                                    html: `<p class='alert_content'>Records of ${class_clear} class has not cleared in overall table</p>`,
+                                    icon: "error",
+                                    customClass: {
+                                        timerProgressBar: 'bar_error',
+                                        icon: "icon_error"
+                                    }
+                                });
+                            }
+                        }
+                    });
+            }
+        });
+    });
     var update_sno = 0;
     $("#overall_form_data").submit(function (e) {
         e.preventDefault();
@@ -478,7 +525,6 @@ sort_in_class.addEventListener("change", function () {
     const selected_option = sort_in_class.value;
     // console.log("hello");
     const sorted_data = window.resultSet[selected_option];
-    console.log(sorted_data[0]);
     let sno = 0;
     sorted_data.forEach((arr, index) => {
         sno += 1;

@@ -54,6 +54,7 @@ include "./backend/db/defaulters/db_connection.php";
                                 </div> 
                             </div>
                         </button>
+                        <a href="./backend/db/transfer/overall_data.xlsx" download id="excel" style="display:none"></a>
                         <div id="new_btn">
                         <div id="n1" class="option_btn">
                             <?php
@@ -132,7 +133,7 @@ include "./backend/db/defaulters/db_connection.php";
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
         </div>
         <div class="defaults_con">
-            <h1 id="default_heading" style="text-align:center;">Total Fees Collection and Defaulters</h1>
+            <h1 id="default_heading" style="text-align:center;">Transaction of the given year</h1>
             <table id="defaulters_list">
                 <thead id="defaulter_head">
                 </thead>

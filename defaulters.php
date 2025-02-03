@@ -1,6 +1,6 @@
 <?php
 include "./backend/db/defaulters/db_connection.php";
-$class_array = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X","XIAC","XIDE", "XIIAC","XIIDE"];
+$class_array = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X","XI","XIAC","XIDE", "XIIAC","XIIDE"];
 $class_out = [];
 foreach($class_array as $value)
 {
@@ -96,6 +96,18 @@ $json_array_out = json_encode($class_out);
                             ?>
                         </div>
                     </div>
+                    <div id="clear">
+                        <button type="submit" id="clear_" class="download-btn pixel-corners">
+                                <div class="button-content">
+                                    <div class="svg-container" style="color:white;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calculator"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
+                                    </div>
+                                    <div class="text-container">
+                                    <div class="text">Clear</div>
+                                    </div> 
+                                </div>
+                            </button>
+                    </div>
                     <div id="select" key="0">
                         <label for="class"  class="label">View in standard : </label>
                         <div id="select1" class="select">
@@ -112,6 +124,7 @@ $json_array_out = json_encode($class_out);
                                 <option value="VIII">VIII</option>
                                 <option value="IX">IX</option>
                                 <option value="X">X</option>
+                                <option value="XI">XI</option>
                                 <option value="XIAC">XIAC</option>
                                 <option value="XIDE">XIDE</option>
                                 <option value="XIIAC">XIIAC</option>
