@@ -52,12 +52,13 @@
 
 /*TODO: invoice tabular for receipts of fees payment */
 
-  #maintable
+  .invoice_table
   {
-        padding-inline:40px;
+        padding-inline:10px;
+        margin-top:10px;
 
   }
-#maintable table .head{
+.invoice_table table .head{
     text-align:center;
     font-size:15px;
 }
@@ -88,15 +89,36 @@
     width: 100%;
     margin-top:20px;
 }
-#particular_table, #particular_table th
+#particular_table
+{
+    border:none;
+}
+#particular_table th, #particular_table td
+{
+    border: none;
+}
+#particular_table th:first-child,#particular_table td:first-child
 {
     border:solid 1px black;
-    border-collapse:collapse;
+    border-left: none;
 }
-#particular_table td
+#particular_table th:last-child,#particular_table td:last-child
+{
+    border:solid 1px black;
+    border-right: none;
+}
+#particular_table tr:last-child td
+{
+    border-bottom: none;
+}
+#particular_table tbody td
+{
+    text-align:center;
+}
+/* #particular_table td
 {
     border-right: solid 1px black;
-}
+} */
 #particular_table .col1
 {
     width:70%;
@@ -105,16 +127,16 @@
 {
     text-align:center;
 }
-#particular_table .total
+/* #particular_table .total
 {
         border-top: solid 1px black;
-}
+} */
 .invoice_line
 {
      position: relative;
      display: inline-block;
 }
-.invoice_line::after
+/* .invoice_line::after
 {
     content:"";
     width:100%;
@@ -123,30 +145,14 @@
     position: absolute;
     bottom:0;
     left:0;
-}
-.invoice_print
+} */
+/* #invoice_print
 {
     display:none;
-}
+} */
+ .cells
+ {
+    padding-left:10px;
+ }
 
 /* print module styles */
-
-@media print 
-{   
-    .nav-bars
-    {
-        display: none;
-    }
-    #collection-form
-    {
-        display:none;
-    }
-    #datatable
-    {
-        display:none !important;
-    }
-    .invoice_print.display
-    {
-        display:block;
-    }
-}

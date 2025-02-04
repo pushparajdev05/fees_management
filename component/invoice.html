@@ -1,57 +1,61 @@
 <div id="fees_invoice">
-   <div id="maintable">
+   <div class="invoice_table">
 
         <table class="main">
             <thead>
             <tr>
-                <td class="head"><h1>MEASI MATRICULATION HR. SEC. SCHOOL</h1></td>
+                <td class="head" colspan="2"><h1>MEASI MATRICULATION HR. SEC. SCHOOL</h1></td>
             </tr>
             <tr>
-                <td class="head"><h2>113, Angappan Street, Chennai - 600 001</h2></td>
-            </tr>   
-            
+                <td class="head" colspan="2"><h2>113, Angappan Street, Chennai - 600 001</h2></td>
+            </tr>               
                 <tr>
-                    <th class="date"style="text-align:right;">Date : 
-                        <span id="invoice_date" class="invoice_line">20/11/2024</span>
-                    </th>
+                    <td class="receipt cells" style="text-align:left;">Receipt No : 
+                        <span id="invoice_receipt" class="invoice_line"></span>
+                    </td>
+                    <td class="date cells" style="text-align:right;padding-right:10px;">
+                        Mode :
+                        <span id="invoice_mode" class="invoice_line"></span>,
+                        Date : 
+                        <span id="invoice_date" class="invoice_line"></span>
+                    </td>
                 </tr>
                 <tr>
-                    <td class="name">Name :
+                    <td class="admission cells">Admission  No :
+                        <span id="invoice_admin" class="invoice_line"></span>
+                    </td>
+                    <td class="name cells">Name :
                         <span id="invoice_name" class="invoice_line"></span>
                     </td>
                 </tr>
-                <tr style="display: flex;">
-                    <td class="std">Std :
+                <tr>
+                    <td class="std cells">Class :
                         <span id="invoice_std" class="invoice_line"></span>
                     </td>
-                    <td class="sec">Sec :
+                    <td class="sec cells">Section :
                         <span id="invoice_sec" class="invoice_line"></span>
                     </td>
                 </tr>
             </thead>
                 <tbody>
                     <tr>
-                        <td>
+                        <td colspan="2">
                             <table id="particular_table">
+                                <thead>
                                 <tr>
                                     <th class="Particulars col1">Particulars</th>
                                     <th class="amount col2">amount</th>
                                 </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+   
+                                <tfoot>
                                 <tr>
-                                    <td>belt</td>
-                                    <td>50</td>
+                                    <td style="text-align:right;padding-right: 10px;font-weight: bold;">Total</td>
+                                    <td class="total"></td>
                                 </tr>
-                                <tr>
-                                    <td>boy</td>
-                                    <td>800</td>
-                                </tr>
-                                <tr>
-                                    <td>&nbsp;</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;padding-right: 10px;font-weight: bold;">total</td>
-                                    <td class="total">200</td>
-                                </tr>
+                                </tfoot>
                             </table>
                         </td>
                     </tr>

@@ -94,11 +94,11 @@
         </div>
         <div id="btn_option">
             <div id="btn">
-                <div class="print"> 
+                <!-- <div class="print"> 
                     <?php
                         include "print_btn.html";
                     ?>
-                </div>
+                </div> -->
                 <div class="submit">
                     <?php
                         include "save_btn.html";

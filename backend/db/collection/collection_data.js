@@ -52,6 +52,20 @@ $(document).ready(function () {
             exportOptions: { columns: ':not(:last-child)' }
         },]
     });
+    const print_config ={
+                            //pageTitle: window.document.title, // Title of the page
+        
+                            importCSS: true, // Import parent page css
+                            inlineStyle: true, // If true it takes inline style tag
+                            autoPrint: true, // Print automatically when the page is open
+    
+                            autoPrintDelay: 500, // Delay in milliseconds before printing
+        
+                            header: null, // String or element this will be appended to the top of the printout
+                            footer: null, // String or element this will be appended to the bottom of the printout
+            
+                            //noPrintClass: "no-print", // Class to remove the elements that should not be printed
+                        };
     const total_amount = document.getElementById("amt");
     $("#amt").focus(function (event) {
         const [types_array, types_values] = fees_amt_prepare();
@@ -118,6 +132,9 @@ $(document).ready(function () {
                         const res = data["row"] ?? [null];
                         if (res[0] == 0) {
                             table1.row.add(res[1]).draw(false);
+                            insert_invoice(res[1],"Cash");
+                            printout("#invoice_print", print_config);
+                            $("#fees_invoice .invoice_table:last-child").remove();
                         }
                         if (message[0] == 404) {
                             Toast.fire({
@@ -162,10 +179,18 @@ $(document).ready(function () {
                         if (res[0] == 0) {
                             current_value = table1.row(update_btn.parents("tr"));
                             let ind = 3;
-                            res[1].forEach(function (value, colIndex) {
+                            const update_val_arr = res[1];
+                            update_val_arr.forEach(function (value, colIndex) {
                                 table1.cell({ row: current_value.index(), column: (colIndex + ind) }).data(value);
                             });
                             table1.draw(false);
+                            $("#invoice_name").text(update_val_arr[0]);
+                            $("#invoice_std").text(update_val_arr[1]);
+                            $("#invoice_sec").text(update_val_arr[2]);
+                            const clone_elm = $(".invoice_table").clone();
+                            $("#fees_invoice").append(clone_elm);
+                            printout("#invoice_print", print_config);
+                            $("#fees_invoice .invoice_table:last-child").remove();
                         }
                         if (message[0] == 101) {
                             Toast.fire({
@@ -242,6 +267,10 @@ $(document).ready(function () {
                     const res = data["row"] ?? [null];
                     if (res[0] == 0) {
                         table2.row.add(res[1]).draw(false);
+                            insert_invoice(res[1],"Cheque/Online");
+                        printout("#invoice_print", print_config);
+                        $("#fees_invoice .invoice_table:last-child").remove();
+                        
                     }
                     if (message[0] == 404) {
                         Toast.fire({
@@ -282,13 +311,21 @@ $(document).ready(function () {
                     const res = data["row"] ?? [null];
                     let current_value;
                     if (res[0] == 0) {
-                        console.log("the reponse of the cheque/Online data updation"+res[1]);
+                        console.log("the reponse of the cheque/Online data updation" + res[1]);
                         current_value = table2.row(update_btn.parents("tr"));
+                        const update_val_arr = res[1];
                         let ind = 3;
-                        res[1].forEach(function (value, colIndex) {
+                        update_val_arr.forEach(function (value, colIndex) {
                             table2.cell({ row: current_value.index(), column: (colIndex + ind) }).data(value);
                         });
                         table2.draw(false);
+                        $("#invoice_name").text(update_val_arr[0]);
+                        $("#invoice_std").text(update_val_arr[1]);
+                        $("#invoice_sec").text(update_val_arr[2]);
+                        const clone_elm = $(".invoice_table").clone();
+                        $("#fees_invoice").append(clone_elm);
+                        printout("#invoice_print", print_config);
+                        $("#fees_invoice .invoice_table:last-child").remove();
                     }
                     if (message[0] == 101) {
                         console.log("message showing");
@@ -461,9 +498,10 @@ $(document).ready(function () {
         var row = $(this);
         if (select.getAttribute("key") == 0) {
             sno1 = row.closest("tr").find("td:eq(0)").text();
+            let receipt = row.closest("tr").find("td:eq(1)").text();
             var admin = row.closest("tr").find("td:eq(2)").text();
             $("#admin").val(admin);
-            $("#admin").prop("readonly",true);
+            $("#admin").prop("readonly", true);
             var name = row.closest("tr").find("td:eq(3)").text();
             $("#std").val(name);
             var class1 = row.closest("tr").find("td:eq(4)").text();
@@ -474,14 +512,15 @@ $(document).ready(function () {
             var mode = row.closest("tr").find("td:eq(6)").text();
             const mode_array = mode.split(",");
             $("#type").val(mode_array);
-            $("#type").prop("disabled",true);
+            $("#type").prop("disabled", true);
             //terms field
             $("#t1").prop("readonly", true);
             $("#t2").prop("readonly", true);
             $("#t3").prop("readonly", true);
             //TODO:term fees checking
-            term_fees(mode_array,row);
-
+            term_fees(mode_array, row);
+            const fees_amt = row.closest("tr").find("td:eq(7)").text();
+            const fees_amt_array = fees_amt.split(",");
             const amount = row.closest("tr").find("td:eq(8)").text();
             $("#amt").val(amount);
             console.log(amount);
@@ -491,11 +530,28 @@ $(document).ready(function () {
             payment.prop("disabled", true);
             type.removeAttribute("required");
             amt1.removeAttribute("required");
+
+            //invoice values insertion
+            let tr = "";
+            $("#invoice_receipt").text(receipt);
+            $("#invoice_mode").text("Cash");
+            $("#invoice_date").text(today);
+            $("#invoice_admin").text(admin);
+            for (let i = 0; i < mode_array.length; i++) {
+                tr += `
+                <tr>
+                    <td>${mode_array[i]}</td>
+                    <td>${fees_amt_array[i]}</td>
+                </tr>
+            `;
+            }
+            $("#particular_table tbody").html(tr);
             $('#collection-form').css('display', 'flex');
         }
         else {
             sno2 = row.closest("tr").find("td:eq(0)").text();
             var admin = row.closest("tr").find("td:eq(2)").text();
+            let receipt = row.closest("tr").find("td:eq(1)").text();
             $("#admin").val(admin);
             $("#admin").prop("readonly",true);
             var name = row.closest("tr").find("td:eq(3)").text();
@@ -514,7 +570,9 @@ $(document).ready(function () {
             $("#t2").prop("readonly", true);
             $("#t3").prop("readonly", true);
             //TODO:term fees checking
-            term_fees(mode_array,row);
+            term_fees(mode_array, row);
+            const fees_amt = row.closest("tr").find("td:eq(7)").text();
+            const fees_amt_array = fees_amt.split(",");
 
             var amt = row.closest("tr").find("td:eq(8)").text();
             $("#amt").val(amt);
@@ -524,13 +582,29 @@ $(document).ready(function () {
             payment.prop("disabled", true);
             type.removeAttribute("required");
             amt1.removeAttribute("required");
+
+            //invoice value setting to fileds
+            let tr = "";
+            $("#invoice_receipt").text(receipt);
+            $("#invoice_mode").text("Cheque\\online");
+            $("#invoice_date").text(today);
+            $("#invoice_admin").text(admin);
+            for (let i = 0; i < mode_array.length; i++) {
+                tr += `
+                <tr>
+                    <td>${mode_array[i]}</td>
+                    <td>${fees_amt_array[i]}</td>
+                </tr>
+            `;
+            }
+            $("#particular_table tbody").html(tr);
             $('#collection-form').css('display', 'flex');
         }
         // $("#but").text("Update User");
     });
     function term_fees(mode_array,row)
     {
-        const fees_amt = row.closest("tr").find("td:eq(6)").text();
+        const fees_amt = row.closest("tr").find("td:eq(7)").text();
             const fees_amt_array = fees_amt.split(",");
             const types = $("#type option:selected");
             let terms = window.term_array;
@@ -665,6 +739,34 @@ $(document).ready(function () {
             }
         });
         return revert_term;
+    }
+    function insert_invoice(row,mode)
+    {
+        let tr = "";
+
+        $("#invoice_receipt").text(row[1]);
+        $("#invoice_mode").text(mode);
+        $("#invoice_date").text(row[9]);
+        $("#invoice_admin").text(row[2]);
+        $("#invoice_name").text(row[3]);
+        $("#invoice_std").text(row[4]);
+        $("#invoice_sec").text(row[5]);
+        const types=row[6].split(",");
+        const amount = row[7].split(",");
+        for (let i = 0; i < types.length; i++)
+        {
+            tr += `
+                <tr>
+                    <td>${types[i]}</td>
+                    <td>${amount[i]}</td>
+                </tr>
+            `;
+        }
+        $("#particular_table tbody").html(tr);
+        $("#particular_table .total").text(row[8]);
+        const clone_elm = $(".invoice_table").clone();
+        $("#fees_invoice").append(clone_elm);
+
     }
             
 });

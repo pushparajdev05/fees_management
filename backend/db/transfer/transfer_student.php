@@ -93,7 +93,12 @@ function history_copy($con)
             $del_transaction_sql = "delete from $value";
             if($con->query($del_transaction_sql))
             {
-                // echo "<p style='font-size:18px'>the transaction of $value copied to the maintance history table</p>";
+                $reset_sql = "alter table $value AUTO_INCREMENT=1001";
+                if($con->query($reset_sql))
+                {
+                    // echo "<p style='font-size:18px'>the transaction of $value copied to the maintance history table</p>";
+
+                }
             }
         } else {
             // echo "<p style='font-size:18px'>Failed to copy the $value to the maintance history table</p>";

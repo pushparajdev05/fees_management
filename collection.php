@@ -354,10 +354,12 @@ $json_term = json_encode($term);
         <div id="table_print">
 
         </div>
-        <div class="invoice_print">
-            <?php
-            include "./component/invoice.html";
-            ?>
+        <div style="display:none">
+            <div id="invoice_print">
+                <?php
+                include "./component/invoice.html";
+                ?>
+            </div>
         </div>
     <script src="./javascript/jquery-3.7.1.js"></script>
     <script src="./javascript/form_collection.js"></script>
