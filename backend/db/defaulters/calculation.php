@@ -1,7 +1,7 @@
 <?php 
 include ("./db_connection.php");
 if (isset($_POST["option"])) {
-    $class_array = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XIAC","XIDE", "XIIAC","XIIDE"];
+    $class_array = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XIAC", "XIDE", "XIIAC", "XIIDE"];
     $table = "";
     if ($_POST["option"] == "Class") {
         $no_stud = [];
@@ -25,6 +25,7 @@ if (isset($_POST["option"])) {
                         <td>Third Quarter Received</td>
                         <td>Scholarship</td>
                         <td>Scholarship Amount</td>
+                        <td>Pending</td>
                         <td>Write Off</td>
                         <td>Total Received and Other Adjustments</td>
                         <td>defaulters</td>
@@ -47,7 +48,7 @@ if (isset($_POST["option"])) {
                 }
                 $term_total_receivable["$value"] = $terms_receivable["$value"][0] + $terms_receivable["$value"][1] + $terms_receivable["$value"][2];
             }
-            $term_rec_sql = "select SUM(term1) as term1, SUM(term2) as term2, SUM(term3) as term3 ,SUM(scholarship_amount) as scholar_amt, SUM(writeoff) as writeoff from overall where class = '$value'";
+            $term_rec_sql = "select SUM(term1) as term1, SUM(term2) as term2, SUM(term3) as term3 ,SUM(scholarship_amount) as scholar_amt,SUM(pending) as pending, SUM(writeoff) as writeoff from overall where class = '$value'";
             $term_rec_res = $con->query($term_rec_sql);
             if ($term_rec_res->num_rows > 0) {
                 while ($row = $term_rec_res->fetch_assoc()) {
@@ -56,8 +57,9 @@ if (isset($_POST["option"])) {
                     $terms_received["$value"][] = $row["term3"];
                     $total_scholar_amt["$value"] = $row["scholar_amt"];
                     $total_writeoff["$value"] = $row["writeoff"];
+                    $total_pending["$value"] = $row["pending"];
                     $total_term_received["$value"] = $terms_received["$value"][0] + $terms_received["$value"][1] + $terms_received["$value"][2] + $row["writeoff"] + $row["scholar_amt"];
-                    $total_defaults["$value"] = $term_total_receivable["$value"] - $total_term_received["$value"];
+                    $total_defaults["$value"] = $total_pending["$value"] + $term_total_receivable["$value"] - $total_term_received["$value"];
                 }
             }
             $scholarship_sql = "select count(scholarship) as total_count from overall where class = '$value ' and scholarship = 'yes'";
@@ -69,9 +71,9 @@ if (isset($_POST["option"])) {
             }
         }
 
-        $table_tr ="";
+        $table_tr = "";
         foreach ($class_array as $value) {
-            $table_tr.="<tr>
+            $table_tr .= "<tr>
                     <td>$no_stud[$value]</td>
                     <td>$value</td>
                     <td>{$terms_receivable[$value][0]}</td>
@@ -83,6 +85,7 @@ if (isset($_POST["option"])) {
                     <td>{$terms_received[$value][2]}</td>
                     <td>{$scholarship_count[$value]}</td>
                     <td>{$total_scholar_amt[$value]}</td>
+                    <td>{$total_pending[$value]}</td>
                     <td>{$total_writeoff[$value]}</td>
                     <td>{$total_term_received[$value]}</td>
                     <td>{$total_defaults[$value]}
@@ -110,9 +113,10 @@ if (isset($_POST["option"])) {
         }
         $col10 = array_sum($scholarship_count);
         $col11 = array_sum($total_scholar_amt);
-        $col12 = array_sum($total_writeoff);
-        $col13 = array_sum($total_term_received);
-        $col14 = array_sum($total_defaults);
+        $col12 = array_sum($total_pending);
+        $col13 = array_sum($total_writeoff);
+        $col14 = array_sum($total_term_received);
+        $col15 = array_sum($total_defaults);
         $table_tr .= '<tr>
                         <td style="border:none"></td>
                         <td style="border:none"></td>
@@ -123,6 +127,7 @@ if (isset($_POST["option"])) {
                         <td style="border:none">THE</td>
                         <td style="border:none">ABOVE</td>
                         <td style="border:none">FIELDS</td>
+                        <td style="border:none"></td>
                         <td style="border:none"></td>
                         <td style="border:none"></td>
                         <td style="border:none"></td>
@@ -144,8 +149,9 @@ if (isset($_POST["option"])) {
             <td>$col12</td>
             <td>$col13</td>
             <td>$col14</td>
+            <td>$col15</td>
             </tr>";
-        $response = [200,$table_head,$table_tr];
+        $response = [200, $table_head, $table_tr];
         echo json_encode($response);
     } else if (preg_match("/Term/", $_POST["option"]) || ($_POST["option"] == "Class & Sec")) {
         $term_fees = [];
@@ -438,7 +444,7 @@ if (isset($_POST["option"])) {
                 echo json_encode([203, $thead, $tbody]);
             } else if ($_POST["option"] == "Class & Sec") {
                 $class_sec = [];
-                $grand_total = [0,0,0,0];
+                $grand_total = [0, 0, 0, 0];
                 $thead = "
                             <tr>
                                 <th>Sno</th>
@@ -500,6 +506,7 @@ if (isset($_POST["option"])) {
                                 </tr>
                             
                             ";
+                            $sno++;
                         }
                     }
                     $tbody .= $tr;
@@ -529,6 +536,106 @@ if (isset($_POST["option"])) {
             }
 
         }
+    } else if ($_POST["option"] == "Overall Total") {
+        $grand_types = ["students","Term I receivable","Term II receivable","Term III receivable","Term I received","Term II received","Term III received","schlorship","pending","writeoff(Other Adjustment)","Total received","Balance Receivable"];
+        $term_fees = [];
+        $student_count = [];
+        $term_total_class = [];
+        $term_grand_total = [];
+        foreach ($class_array as $class_) {
+            $term_sql = "select $class_ from fees_table where types like 'term%'";
+            $term_res = $con->query($term_sql);
+            if ($term_res->num_rows > 0) {
+                while ($row = $term_res->fetch_assoc()) {
+                    $term_fees[$class_][] = $row[$class_];
+                }
+            }
+        }
+        foreach($class_array as $class_)
+        {
+            $stud_sql = "select count(admission) as count from overall where class = '$class_'";
+            $stud_result = $con->query($stud_sql);
+            if($stud_result->num_rows > 0)
+            {
+                while($row=$stud_result->fetch_assoc())
+                {
+                    $student_count[$class_] = $row["count"];
+                    for($j=0; $j < 3;$j++)
+                    {
+                        $term_total_class[$class_][] = $term_fees[$class_][$j] * $student_count[$class_];
+                    }
+                }
+            }
+        }
+        for ($a = 0; $a < 3; $a++) {
+            $grand_tot = 0;
+            foreach ($class_array as $class_) {
+                $grand_tot += $term_total_class[$class_][$a];
+
+            }
+            $term_grand_total[] = $grand_tot;
+        }
+        $grand_tot_sql = "select count(admission) as students,sum(term1) as term1,sum(term2) as term2,sum(term3) as term3,sum(scholarship_amount) as scholarship_amount,sum(pending) as pending,sum(writeoff) as writeoff,sum(total_received) as total_received,sum(balance_receivable) as balance_receivable from overall where class != 'XI'";
+        $result_grand_tot = $con->query($grand_tot_sql);
+        $grand_tot_others = $result_grand_tot->fetch_all(MYSQLI_ASSOC)[0];
+        // print_r($grand_tot_others);  
+        $thead = "
+                            <tr>
+                                <th>Grand Total</th>
+                                <th>Amount</th>
+                            </tr>
+                            ";
+        $tbody= "
+                <tr>
+                        <td>{$grand_types[0]}</td>
+                        <td>{$grand_tot_others['students']}</td>
+                </tr
+                <tr>
+                        <td>{$grand_types[1]}</td>
+                        <td>{$term_grand_total[0]}</td>
+                </tr
+                <tr>
+                        <td>{$grand_types[2]}</td>
+                        <td>{$term_grand_total[1]}</td>
+                </tr
+                <tr>
+                        <td>{$grand_types[3]}</td>
+                        <td>{$term_grand_total[2]}</td>
+                </tr>
+                <tr>
+                        <td>{$grand_types[4]}</td>
+                        <td>{$grand_tot_others['term1']}</td>
+                </tr>
+                <tr>
+                        <td>{$grand_types[5]}</td>
+                        <td>{$grand_tot_others['term2']}</td>
+                </tr>
+                <tr>
+                        <td>{$grand_types[6]}</td>
+                        <td>{$grand_tot_others['term3']}</td>
+                </tr>
+                <tr>
+                        <td>{$grand_types[7]}</td>
+                        <td>{$grand_tot_others['scholarship_amount']}</td>
+                </tr>
+                <tr>
+                        <td>{$grand_types[8]}</td>
+                        <td>{$grand_tot_others['pending']}</td>
+                </tr>
+                <tr>
+                        <td>{$grand_types[9]}</td>
+                        <td>{$grand_tot_others['writeoff']}</td>
+                </tr>
+                <tr>
+                        <td>{$grand_types[10]}</td>
+                        <td>{$grand_tot_others['total_received']}</td>
+                </tr>
+                <tr>
+                        <td>{$grand_types[11]}</td>
+                        <td>{$grand_tot_others['balance_receivable']}</td>
+                </tr>
+                ";
+        echo json_encode([205, $thead, $tbody]);
     } else {
         echo "you selected option is valid one";
     }

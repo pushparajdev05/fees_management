@@ -22,8 +22,8 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && isset($_POST["decide"])) {
     
     if ($decide == "0") {
         $sno = ((int) $index + 1);
-        $total_received = $term1 + $term2 + $term3;
-        $balance_receivable = abs($total_receivable - $total_received -$write_off - $scholarship_amt);
+        $total_received = $term1 + $term2 + $term3 + $write_off + $scholarship_amt;
+        $balance_receivable = $total_receivable - $total_received;
         $sql = "INSERT INTO overall (admission,name,class,section,term1,term2,term3,date,scholarship,scholarship_amount,pending,writeoff,total_receivable,total_received,balance_receivable) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             $stmt = $con->prepare($sql);
@@ -85,9 +85,9 @@ if (($_SERVER["REQUEST_METHOD"] === "POST") && isset($_POST["decide"])) {
         }
     } else {
         $sno = $_POST["sno"];
-        $total_received = $term1 + $term2 + $term3;
+        $total_received = $term1 + $term2 + $term3 + $write_off + $scholarship_amt;
         // echo "update";
-        $balance_receivable = abs($total_receivable - $total_received - $write_off - $scholarship_amt);
+        $balance_receivable = $total_receivable - $total_received;
         $sql = "update overall set admission = ? ,name = ? ,class = ? ,section = ? ,term1 = ? ,term2 = ? ,term3 = ? ,date = ? ,scholarship = ?,scholarship_amount = ? ,writeoff = ?,pending= ?  ,total_receivable = ? ,total_received = ? ,balance_receivable = ?  where admission = ?";
 
         try{

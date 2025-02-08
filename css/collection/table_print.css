@@ -87,6 +87,8 @@
 } */
 #particular_table{
     width: 100%;
+}
+.invoice_table:last-child{
     margin-top:20px;
 }
 #particular_table

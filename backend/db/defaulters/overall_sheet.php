@@ -114,12 +114,11 @@ if($uploaded==true)
                     $term3 = 0;
                 }
                 $total_receivable += $pending;
-                $total_received = $term1 + $term2 + $term3;
-                $balance_receivable = abs($total_receivable - $total_received - $writeoff - $scholar_amt);
+                $total_received = $term1 + $term2 + $term3 + $writeoff + $scholar_amt;
+                $balance_receivable = $total_receivable - $total_received ;
                 $values[] = "($admission,'$name','$class','$section',$term1,$term2,$term3,'$date','$scholar',$scholar_amt,$pending,$writeoff,$total_receivable,$total_received,$balance_receivable)";
             }
             $cat_values = implode(", ", $values);
-            // echo $cat_values;
             if(empty($cat_values))
             {
                 echo "even single record of them don't have suitable format so it did not push into overall table";

@@ -537,6 +537,7 @@ $(document).ready(function () {
             $("#invoice_mode").text("Cash");
             $("#invoice_date").text(today);
             $("#invoice_admin").text(admin);
+            $("#particular_table .total").text(amount);
             for (let i = 0; i < mode_array.length; i++) {
                 tr += `
                 <tr>
@@ -589,6 +590,7 @@ $(document).ready(function () {
             $("#invoice_mode").text("Cheque\\online");
             $("#invoice_date").text(today);
             $("#invoice_admin").text(admin);
+            $("#particular_table .total").text(amount);
             for (let i = 0; i < mode_array.length; i++) {
                 tr += `
                 <tr>

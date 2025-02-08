@@ -18,6 +18,10 @@ ul li:nth-child(4) a
     /* transform:translateX(calc(var(--translate-value) - 4px )); */
     animation:transform4 1s backwards;
 }
+ul li:nth-child(5) a
+{
+    animation:transform5 1s backwards;
+}
 .logout .btn
 {
         display:flex;

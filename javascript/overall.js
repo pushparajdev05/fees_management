@@ -205,7 +205,29 @@ $(document).ready(function () {
                     else if (res[0] == 204)
                     {
                         table2.destroy();
-                        $("#default_heading").text("Total Defaulters of Term III");
+                        $("#default_heading").text("Total received of Class with Section");
+                        $("#defaulter_head").html(res[1]);
+                        $("#defaulter_body").html(res[2]);
+                        table2 = new DataTable('#defaulters_list',
+                            {
+                                ordering: false,
+                                pageLength: -1,
+                                layout:
+                                {
+                                    topStart: {
+                                        buttons: ['excel']
+                                    },
+                                    bottomEnd: null,
+                                    bottomStart: null
+                                },
+                            }
+                        );
+                        $("#defaulter_table").css("display", "block");
+                    }
+                    else if (res[0] == 205)
+                    {
+                        table2.destroy();
+                        $("#default_heading").text("Grand Total of All Students");
                         $("#defaulter_head").html(res[1]);
                         $("#defaulter_body").html(res[2]);
                         table2 = new DataTable('#defaulters_list',

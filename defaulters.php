@@ -43,7 +43,7 @@ $json_array_out = json_encode($class_out);
             <div class="option">
                 <div class="file_selection">
                     <label for="csv_file" class="label">Load Overall Sheet :</label><br>
-                    <input type="file" name="csv_file" id="overall_csv" class="csv_file">
+                    <input type="file" name="csv_file" id="overall_csv" class="csv_file" accept=".csv">
                 </div>
                 <div class="mode_selection">
                     <label for="csv_file" class="label">Mode :</label>
@@ -73,6 +73,7 @@ $json_array_out = json_encode($class_out);
                             <option value="Term II">Term II</option>
                             <option value="Term III">Term III</option>
                             <option value="Class & Sec">Class & Sec</option>
+                            <option value="Overall Total">Overall Total</option>
                         </select>
                     </div>
                     <div id="calc_btn">

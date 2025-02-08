@@ -6,8 +6,33 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 $class_arr = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X","XIAC","XIDE", "XIIAC","XIIDE"];
+$term_fees = [];
+$new_balance_receivable=[];
+$term_total_receivable = [];
+foreach ($class_arr as $class_) {
+    $term_fees_sql = "select types,$class_ from fees_table where types like 'term%'";
+    $term_fees_result = $con->query($term_fees_sql);
+    if($term_fees_result->num_rows > 0)
+    {
+        while($row=$term_fees_result->fetch_assoc())
+        {
+            $term_fees[$class_][] = $row[$class_];
+        }
+        $term_total_receivable[$class_] = array_sum($term_fees[$class_]);
+    }
+    
+}
+$pending_sql = "select admission, balance_receivable from overall where balance_receivable != 0";
+$pending_result = $con->query($pending_sql);
+if($pending_result->num_rows > 0)
+{
+    $past_pending = $pending_result->fetch_all(MYSQLI_ASSOC);
+}
+else{
+    $past_pending = [];
+}
 $con->begin_transaction();
-function transfer_student($con, $class_arr)
+function transfer_student($con, $class_arr,$term_total_receivable,$past_pending)
 {
     $index = 1;
     $class_data = [];
@@ -33,9 +58,9 @@ function transfer_student($con, $class_arr)
     for ($i = 0; $i < 12; $i++) {
         $class_index = $i + 1;
         if ($class_index == 12) {
-            $update_sql2 = "update overall set class = 'XI' where class='$class_index'";
+            $update_sql2 = "update overall set class = 'XI',term1 = 0,term2 = 0,term3 = 0,date = 'nil',scholarship = 'no',scholarship_amount = 0, pending = 0, writeoff = 0,total_receivable = 0,total_received = 0,balance_receivable = 0 where class='$class_index'";
         } else {
-            $update_sql2 = "update overall set class = '{$class_arr[$class_index]}' where class='$class_index'";
+            $update_sql2 = "update overall set class = '{$class_arr[$class_index]}',term1 = 0,term2 = 0,term3 = 0,date = 'nil',scholarship = 'no',scholarship_amount = 0, pending = 0, writeoff = 0,total_receivable = {$term_total_receivable[$class_arr[$class_index]]},total_received = 0,balance_receivable = {$term_total_receivable[$class_arr[$class_index]]} where class='$class_index'";
 
         }
         if ($con->query($update_sql2)) {
@@ -50,13 +75,13 @@ function transfer_student($con, $class_arr)
     $passed_year = date("Y");
     for ($a = 0; $a < count($higher_class[0]); $a++) {
         $higher = $higher_class[0][$a];
-        $higher_sql = "insert into passedout (admission,name,class,section,passed_year,pending) select admission,name,class,section,$passed_year as passed_year ,pending from overall where class = '$higher' ";
+        $higher_sql = "insert into passedout (admission,name,class,section,passed_year,pending) select admission,name,class,section,$passed_year as passed_year ,balance_receivable from overall where class = '$higher' ";
         if ($con->query($higher_sql)) {
             // echo "<p style='font-size:18px'>successfully transferred student from $higher to Passed Out</p>";
             $del_sql = "delete from overall where class= '$higher'";
             if ($con->query($del_sql)) {
                 $higher2 = $higher_class[1][$a];
-                $higher_update = "update overall set class = '$higher' where class= '$higher2'";
+                $higher_update = "update overall set class = '$higher' ,term1 = 0,term2 = 0,term3 = 0,date = 'nil',scholarship = 'no',scholarship_amount = 0, pending = 0, writeoff = 0,total_receivable = {$term_total_receivable[$higher]},total_received = 0,balance_receivable = {$term_total_receivable[$higher]} where class= '$higher2'";
                 if ($con->query($higher_update)) {
                     // echo "<p style='font-size:18px'>student are transferred from $higher2 to $higher</p>";
                 } else {
@@ -66,6 +91,21 @@ function transfer_student($con, $class_arr)
             }
         } else {
             // echo "<p style='font-size:18px'>falied to tranfer XII student to passed out table</p>";
+            return [false, []];
+        }
+    }
+    $pending_amt = 0;
+    $bal_rec=0;
+    $ad=0;
+    $pending_update_sql="update overall set pending = ?,total_receivable = total_receivable + ?,balance_receivable = balance_receivable + ? where admission = ?";
+    $update_stmt=$con->prepare($pending_update_sql);
+    $update_stmt->bind_param("iiii",$pending_amt,$pending_amt,$pending_amt,$ad);
+    foreach($past_pending as $pending)
+    {
+        $ad = $pending["admission"];
+        $pending_amt = $pending["balance_receivable"];
+        if(!$update_stmt->execute())
+        {
             return [false, []];
         }
     }
@@ -149,7 +189,7 @@ function addDataToSheet($spreadsheet, $sheetIndex, $sheetName, $data)
 
 }
 // transfer student from LKG to UKG
-$transfer_ = transfer_student($con,$class_arr);
+$transfer_ = transfer_student($con,$class_arr,$term_total_receivable,$past_pending);
 $save_decision = $transfer_[0];
 $class_data = $transfer_[1];
 
