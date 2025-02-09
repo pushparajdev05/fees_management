@@ -15,6 +15,14 @@
             </div>
             <div class="input row">
                 <div class="col1">
+                    <label for="dup_receipt">Receipt No</label> 
+                </div>
+                <div class="col2">
+                    <input name="dup_receipt" id="dup_receipt" type="number" required>
+                </div>
+            </div>
+            <div class="input row">
+                <div class="col1">
                     <label for="std">Student Name</label>
                 </div>
                 <div class="col2">

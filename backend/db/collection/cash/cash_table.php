@@ -6,7 +6,7 @@ if (isset($_POST["decide"])) {
     $name = trim($_POST["std"]);
     $class = trim($_POST["class"]);
     $section = strtoupper(trim($_POST["section"]));
-    
+    $dup_receipt = $_POST["dup_receipt"];
     // print_r($term);
     if ($decide == "0") {
         $type = trim($_POST["types"]);
@@ -65,7 +65,7 @@ if (isset($_POST["decide"])) {
                 $write_off = $row["writeoff"];
             }
         }
-        $sql = "insert into cash (admission,name,class,section,type,amount,total,date) values (?,?,?,?,?,?,?,?)";
+        $sql = "insert into cash (dup_receipt,admission,name,class,section,type,amount,total,date) values (?,?,?,?,?,?,?,?,?)";
         $stmt = $con->prepare($sql);
 
         // echo $action;
@@ -106,7 +106,7 @@ if (isset($_POST["decide"])) {
             $amt = implode(",", $split_cash);
             $total = array_sum($split_cash);
             if ($type != "") {
-                $stmt->bind_param("isssssis", $admission, $name, $class, $section, $type, $amt, $total, $today);
+                $stmt->bind_param("iisssssis", $dup_receipt, $admission, $name, $class, $section, $type, $amt, $total, $today);
                 if ($stmt->execute()) {
                     // print_r($term_values);
                     // print_r($old_term);
@@ -133,6 +133,7 @@ if (isset($_POST["decide"])) {
                     $table_tr = [
                         $insert_sno1,
                         $id,
+                        $dup_receipt,
                         $admission,
                         $name,
                         $class,
@@ -207,6 +208,7 @@ if (isset($_POST["decide"])) {
                 $table_tr = [
                     $insert_sno1,
                     $id,
+                    $dup_receipt,
                     $admission,
                     $name,
                     $class,
@@ -248,18 +250,18 @@ if (isset($_POST["decide"])) {
         $old_admission = trim($_POST["old_ad"]);
         $sno1 = trim($_POST["sno1"]);
         $today = trim($_POST["date"]);
-        $sql = "update cash set name= ?,class= ?,section= ? where sno= ? ";
+        $sql = "update cash set dup_receipt = ?,name= ?,section= ? where sno= ? ";
         $stmt = $con->prepare($sql);
-        $stmt->bind_param("sssi", $name, $class, $section, $old_admission);
-        $overall_update = "update overall set name= ?,class= ?,section= ? where admission= ?";
+        $stmt->bind_param("issi", $dup_receipt, $name, $section, $old_admission);
+        $overall_update = "update overall set name= ?,section= ? where admission= ?";
         $overall_stmt = $con->prepare($overall_update);
-        $overall_stmt->bind_param("sssi", $name, $class, $section, $admission);
+        $overall_stmt->bind_param("ssi", $name,  $section, $admission);
         if ($stmt->execute()) {
             $message = "";
             if ($overall_stmt->execute()) {
                 $table_tr = [
+                    $dup_receipt,
                     $name,
-                    $class,
                     $section,
                 ];
                 $message = "The Transaction has updated in Daily Collection and overall table";

@@ -2,11 +2,11 @@
 include ("../db_connection.php");
 if (isset($_POST["decide"])) {
     $decide = trim($_POST["decide"]);
-    $admission=trim($_POST["admission"]);
-    $name=trim($_POST["std"]);
-    $class=trim($_POST["class"]);
-    $section=strtoupper(trim($_POST["section"]));
-    
+    $admission = trim($_POST["admission"]);
+    $name = trim($_POST["std"]);
+    $class = trim($_POST["class"]);
+    $section = strtoupper(trim($_POST["section"]));
+    $dup_receipt = $_POST["dup_receipt"];
     // print_r($term);
     if ($decide == "0") {
         $type = trim($_POST["types"]);
@@ -65,7 +65,7 @@ if (isset($_POST["decide"])) {
                 $write_off = $row["writeoff"];
             }
         }
-        $sql = "insert into cheque_online (admission,name,class,section,type,amount,total,date) values (?,?,?,?,?,?,?,?)";
+        $sql = "insert into cheque_online (dup_receipt,admission,name,class,section,type,amount,total,date) values (?,?,?,?,?,?,?,?,?)";
         $stmt = $con->prepare($sql);
 
         // echo $action;
@@ -106,7 +106,7 @@ if (isset($_POST["decide"])) {
             $amt = implode(",", $split_cash);
             $total = array_sum($split_cash);
             if ($type != "") {
-                $stmt->bind_param("isssssis", $admission, $name, $class, $section, $type, $amt, $total, $today);
+                $stmt->bind_param("iisssssis", $dup_receipt, $admission, $name, $class, $section, $type, $amt, $total, $today);
                 if ($stmt->execute()) {
                     // print_r($term_values);
                     // print_r($old_term);
@@ -133,6 +133,7 @@ if (isset($_POST["decide"])) {
                     $table_tr = [
                         $insert_sno1,
                         $id,
+                        $dup_receipt,
                         $admission,
                         $name,
                         $class,
@@ -207,6 +208,7 @@ if (isset($_POST["decide"])) {
                 $table_tr = [
                     $insert_sno1,
                     $id,
+                    $dup_receipt,
                     $admission,
                     $name,
                     $class,
@@ -246,35 +248,31 @@ if (isset($_POST["decide"])) {
             }
 
         }
-    } 
-    else
-    {
+    } else {
         $sno2 = $_POST["sno2"];
         $today = $_POST["date"];
-        $old_admission=$_POST["old_ad"];
-        $sql= "update cheque_online set name= ?,class= ?,section= ? where sno= ? ";
+        $old_admission = $_POST["old_ad"];
+        $sql = "update cheque_online set dup_receipt = ?,name= ?,section= ? where sno= ? ";
         $stmt = $con->prepare($sql);
-        $stmt->bind_param("sssi",$name,$class,$section,$old_admission);
-        $overall_update="update overall set name= ?,class= ?,section= ? where admission= ?";
+        $stmt->bind_param("issi", $dup_receipt,$name, $section, $old_admission);
+        $overall_update = "update overall set name= ?,section= ? where admission= ?";
         $overall_stmt = $con->prepare($overall_update);
-        $overall_stmt->bind_param("sssi", $name, $class, $section,$admission);
+        $overall_stmt->bind_param("ssi",  $name, $section, $admission);
         if ($stmt->execute()) {
             $message = "";
-            if($overall_stmt->execute())
-            {
-            $table_tr = [
-                $name,
-                $class,
-                $section,
-            ];
-            $message = "The Transaction has updated in Daily Collection and overall table";
-            }
-            else{
+            if ($overall_stmt->execute()) {
+                $table_tr = [
+                    $dup_receipt,
+                    $name,
+                    $section,
+                ];
+                $message = "The Transaction has updated in Daily Collection and overall table";
+            } else {
                 $message = "The Transaction has updated in Daily Collection and not updated in overall table, reason could be (not found student record related to admission no)";
             }
-            echo json_encode(["row"=>[0, $table_tr],"message"=>[101,$message]]);
+            echo json_encode(["row" => [0, $table_tr], "message" => [101, $message]]);
         } else {
-            echo json_encode(["message"=>[404,"The transaction has not updated in Daily Collection"]]);
+            echo json_encode(["message" => [404, "The transaction has not updated in Daily Collection"]]);
         }
     }
     $con->close();

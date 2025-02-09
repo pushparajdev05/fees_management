@@ -221,7 +221,8 @@ $json_term = json_encode($term);
     <thead>
         <tr>
             <th>S.No</th>
-            <th style="white-space: nowrap;">Receipt No</th>
+            <th style="white-space: nowrap;">Receipt1 No</th>
+            <th style="white-space: nowrap;">Receipt2 No</th>
             <th style="white-space: nowrap;">Admission No</th>
             <th>name</th>
             <th>Class</th>
@@ -245,6 +246,7 @@ $json_term = json_encode($term);
                     echo"<tr>
                         <td>".++$i."</td>
                         <td>{$row["sno"]}</td>
+                        <td>{$row["dup_receipt"]}</td>
                         <td>{$row["admission"]}</td>
                         <td style='white-space:nowrap;'>{$row["name"]}</td>
                         <td style='width:130px;white-space:nowrap;'>{$row["class"]}</td>
@@ -288,8 +290,9 @@ $json_term = json_encode($term);
     <thead>
         <tr>
             <th>S.No</th>
+            <th style="white-space: nowrap;">Receipt1 No</th>
+            <th style="white-space: nowrap;">Receipt2 No</th>
             <th style="white-space: nowrap;">Admission No</th>
-            <th style="white-space: nowrap;">Receipt No</th>
             <th>name</th>
             <th>Class</th>
             <th>Section</th>
@@ -312,6 +315,7 @@ $json_term = json_encode($term);
                     echo"<tr>
                         <td>".++$j."</td>
                         <td>{$row["sno"]}</td>
+                        <td>{$row["dup_receipt"]}</td>
                         <td>{$row["admission"]}</td>
                         <td style='white-space:nowrap;'>{$row["name"]}</td>
                         <td style='white-space:nowrap;'>{$row["class"]}</td>
