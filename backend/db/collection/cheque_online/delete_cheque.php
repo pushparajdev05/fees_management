@@ -1,10 +1,12 @@
 <?php 
-	include ("../db_connection.php");
+include ("../db_connection.php");
 if(isset($_POST["admin"]))
 {
 	$ad=$_POST["admin"];
 	$admission = $_POST["admission"];
 	$revert_term = $_POST["revertTerm"];
+	$revert_pending = $_POST["revert_pending"];
+	// echo "the revert pending is $revert_pending";
 	$sql = "delete from cheque_online where sno='{$ad}'";
 	$stored_term = [];
 	$update_arr = [];
@@ -31,15 +33,29 @@ if(isset($_POST["admin"]))
 			$update_arr[] = "term$num = {$revert_term[$i]}";
 		}
 	}
+	$message = [];
+	$update_exe = true;
 	if(!(empty($update_arr)))
 	{
 		$cat_update = implode(",",$update_arr);
-		$overall_update = "update overall set $cat_update where admission = $admission";
+		$overall_update = "update overall set $cat_update , pending = pending + $revert_pending , total_receivable = total_receivable + $revert_pending , total_received = term1 + term2 + term3 , balance_receivable = total_receivable - total_received  where admission = $admission";
 		$update_exe=$con->query($overall_update);
 	}
-	if ($con->query($sql)) {
-			echo json_encode(array("message"=>[101,"The transaction has deleted in Daily Collection"]));
-	} else {
-		echo json_encode(["error"=>404,"The transaction has not deleted in Daily Collection"]);
+	else
+	{
+		if($revert_pending > 0)
+		{
+			$overall_update = "update overall set pending = pending + $revert_pending , total_receivable = total_receivable + $revert_pending , balance_receivable = total_receivable - total_received  where admission = $admission";
+			$update_exe = $con->query($overall_update);
+		}
+	}
+	if($update_exe)
+	{
+		if ($con->query($sql)) {
+				echo json_encode(array("message"=>[101,"The transaction has deleted in Daily Collection"]));
+		} else {
+			echo json_encode(["error"=>404,"The transaction has not deleted in Daily Collection"]);
+		}
 	}
 }
+?>

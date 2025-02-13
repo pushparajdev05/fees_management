@@ -70,6 +70,7 @@ $(document).ready(function () {
     $("#amt").focus(function (event) {
         const [types_array, types_values] = fees_amt_prepare();
         let total = 0;
+        console.log(types_values);
         types_values.forEach((val) => {
             total += parseInt(val);
         });
@@ -101,6 +102,7 @@ $(document).ready(function () {
         const section_ = $("#section").val();
         const admission = $("#admin").val();
         const dup_receipt = $("#dup_receipt").val();
+        const pending_amt2 = $("#pending").val();
         if (payment_value == "0") {
             insert_sno1 =table1.data().length;
             if (decide == "1") {
@@ -113,12 +115,12 @@ $(document).ready(function () {
                 data_form.push({name:'section', value:section_});  
                 data_form.push({name:'decide', value:decide});  
                 data_form.push({name:'dup_receipt', value:dup_receipt});  
-                console.log(update_form);
             }
             else {
                 data_form.push({ name: 'insert_sno1', value: parseInt(insert_sno1) });
                 data_form.push({ name: 'types', value: types_value});
                 data_form.push({ name: 'cashList', value: cashList});
+                data_form.push({ name: 'pending_amt', value: pending_amt2});
             }
             $.ajax({
                 url: "./backend/db/collection/cash/cash_table.php",
@@ -256,7 +258,8 @@ $(document).ready(function () {
             else{
                 data_form.push({ name: 'insert_sno2', value: insert_sno2 });
                 data_form.push({ name: 'cashList', value: cashList});
-                data_form.push({ name: 'types', value: types_value});
+                data_form.push({ name: 'types', value: types_value });
+                data_form.push({ name: 'pending_amt', value: pending_amt2});
             }
         // console.log("hi pushparaj")
         $.ajax({
@@ -380,7 +383,7 @@ $(document).ready(function () {
         e.preventDefault();
         var ad = $(this).attr("ad");
         var btn = $(this);
-        const revert_term = delete_data_prepare(btn);
+        const [revert_term,revert_pending] = delete_data_prepare(btn);
         const admission = btn.closest("tr").find("td:eq(3)").text();
         console.log(revert_term);
         if (select.getAttribute("key") == 0) {
@@ -399,6 +402,7 @@ $(document).ready(function () {
                             admin: ad,
                             revertTerm: revert_term,
                             admission: admission,
+                            revert_pending:revert_pending
                         },
                         beforeSend: function () {
                             $(btn).find(".text").text("Deleting...");
@@ -455,6 +459,7 @@ $(document).ready(function () {
                             admin: ad,
                             revertTerm: revert_term,
                             admission: admission,
+                            revert_pending:revert_pending
                         },
                         beforeSend: function () {
                             $(btn).find(".text").text("Deleting...");
@@ -537,6 +542,10 @@ $(document).ready(function () {
             const amount = row.closest("tr").find("td:eq(9)").text();
             $("#amt").val(amount);
             console.log(amount);
+            if ("pending" == mode_array[mode_array.length - 1]) {
+                $("#pending").val(fees_amt_array[fees_amt_array.length - 1]);
+            }
+            $("#pending").prop("readonly", true);
             today = row.closest("tr").find("td:eq(10)").text();
             const payment = $("#payment");
             payment.val("0");
@@ -580,8 +589,8 @@ $(document).ready(function () {
             $("#section").val(section);
             var mode = row.closest("tr").find("td:eq(7)").text();
             const mode_array = mode.split(",");
-            $("#type").val(mode_array );
-            $("#type").prop("disabled",true);
+            $("#type").val(mode_array);
+            $("#type").prop("disabled", true);
             //terms field
             $("#t1").prop("readonly", true);
             $("#t2").prop("readonly", true);
@@ -593,6 +602,10 @@ $(document).ready(function () {
 
             var amt = row.closest("tr").find("td:eq(9)").text();
             $("#amt").val(amt);
+            if ("pending" == mode_array[mode_array.length - 1]) {
+                $("#pending").val(fees_amt_array[fees_amt_array.length - 1]);
+            }
+            $("#pending").prop("readonly", true);
             today = row.closest("tr").find("td:eq(10)").text();
             const payment = $("#payment");
             payment.val("1");
@@ -665,9 +678,9 @@ $(document).ready(function () {
     function fees_amt_prepare()
     {
         const types = $("#type option:selected");
-        console.log(types);
         let terms = window.term_array;
         console.log("the term  array is :" + terms);
+        const pending_amt = $("#pending").val();
         const types_array = [];
         const types_values = [];
         types.each(function () {
@@ -725,11 +738,17 @@ $(document).ready(function () {
                 
                 }
         });
+        if (pending_amt != 0)
+        {
+            types_array.push("pending");
+            types_values.push(pending_amt);
+        }
         return [types_array,types_values]
     }
     function delete_data_prepare(btn)
     {
         const revert_term = [];
+        let revert_pending = 0;
         const terms = window.term_array;
         const term_types =btn.closest("tr").find("td:eq(7)").text();
         const term_values =btn.closest("tr").find("td:eq(8)").text();
@@ -756,7 +775,10 @@ $(document).ready(function () {
                 }
             }
         });
-        return revert_term;
+        if ("pending" == term_types_array[term_types_array.length - 1]) {
+            revert_pending = term_values_array[term_values_array.length - 1];
+        }
+        return [revert_term,revert_pending];
     }
     function insert_invoice(row,mode)
     {

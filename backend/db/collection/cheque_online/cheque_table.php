@@ -13,6 +13,7 @@ if (isset($_POST["decide"])) {
         $amt = trim($_POST["cashList"]);
         $total = trim($_POST["amt"]);
         $insert_sno1 = ((int) trim($_POST["insert_sno2"])) + 1;
+        $pending_amt = $_POST["pending_amt"];
         $today = date("d/m/Y");
         $paid_date = $today;
         $action = false;
@@ -53,7 +54,7 @@ if (isset($_POST["decide"])) {
             $term_values[] = $stored_fees["{$fees_term[$j]}"] ?? "null";
             $j++;
         }
-        $overall_sql = "select term1,term2,term3,total_receivable,writeoff from overall where admission = {$admission}";
+        $overall_sql = "select term1,term2,term3,total_receivable,writeoff,scholarship_amount,pending from overall where admission = {$admission}";
         $overall_res = $con->query($overall_sql);
         if ($overall_res->num_rows > 0) {
             $action = true;
@@ -61,8 +62,10 @@ if (isset($_POST["decide"])) {
                 $old_term[0] = $row['term1'];
                 $old_term[1] = $row['term2'];
                 $old_term[2] = $row['term3'];
-                $total_receivable = $row["total_receivable"];
                 $write_off = $row["writeoff"];
+                $scholarship_amt = $row["scholarship_amount"];
+                $pending = $row["pending"] - $pending_amt;
+                $total_receivable = $row["total_receivable"] - $pending_amt;
             }
         }
         $sql = "insert into cheque_online (dup_receipt,admission,name,class,section,type,amount,total,date) values (?,?,?,?,?,?,?,?,?)";
@@ -112,17 +115,18 @@ if (isset($_POST["decide"])) {
                     // print_r($old_term);
                     // print_r($term);
                     // echo "the total received $total_received";
-                    $balance_receivable = abs($total_received - $total_receivable - $write_off);
+                    $total_received = $total_received + $write_off + $scholarship_amt;
+                    $balance_receivable = abs($total_received - $total_receivable);
                     $cat_column = implode(",", $column);
                     if (!(empty($cat_column))) {
                         $cat_column .= ",";
                     }
                     // print_r($column);
                     // echo "this is cat_column $cat_column";
-                    $update_sql = "update overall set $cat_column date = ?,total_received = ? ,balance_receivable = ? where admission = ?";
+                    $update_sql = "update overall set $cat_column date = ?,total_received = ? ,pending = ?,total_receivable = ? , balance_receivable = ? where admission = ?";
                     $update_stmt = $con->prepare($update_sql);
                     // echo $update_sql;
-                    $update_stmt->bind_param("siii", $paid_date, $total_received, $balance_receivable, $admission);
+                    $update_stmt->bind_param("siiiii", $paid_date, $total_received,$pending,$total_receivable, $balance_receivable, $admission);
                     if ($update_stmt->execute()) {
                         $message = [101, "The Transaction has inserted in Daily and updated in Overall table"];
                     } else {
@@ -176,7 +180,7 @@ if (isset($_POST["decide"])) {
 
 
         } else {
-            $stmt->bind_param("isssssis", $admission, $name, $class, $section, $type, $amt, $total, $today);
+            $stmt->bind_param("iisssssis",$dup_receipt, $admission, $name, $class, $section, $type, $amt, $total, $today);
             if ($stmt->execute()) {
                 $b = 0;
                 while ($b < count($term_values)) {

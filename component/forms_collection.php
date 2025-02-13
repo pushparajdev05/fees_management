@@ -80,6 +80,14 @@
             </div>
             <div class="input row">
                 <div class="col1">
+                    <label for="pending">Pending</label>
+                </div>
+                <div class="col2">
+                    <input name="pending" id="pending" type="number" value="0" required>
+                </div>
+            </div>
+            <div class="input row">
+                <div class="col1">
                     <label for="amt">Amount</label>
                 </div>
                 <div class="col2">
