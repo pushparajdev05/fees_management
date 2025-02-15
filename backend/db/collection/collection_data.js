@@ -79,304 +79,316 @@ $(document).ready(function () {
     var receipt;
     $("#collection_data").submit(function (event) {
         event.preventDefault();
-        var decide = $("#decide").val();
-        const payment = $("#payment");
-        var payment_value = payment.val();
-        console.log("the payment mode value" + payment_value);
-        const [types_array, types_values] = fees_amt_prepare();
-        console.log(`the type values ${types_array}`);
-        cashList = types_values.join(",");
-        const types_value = types_array.join(",");
-        console.log(types_value);
-        var data_form;
-        if (decide == "1") {
-            data_form = [];
-        }
-        else {
-            data_form = $("#collection_data").serializeArray();
-        }
-       
-        var update_form = new FormData();
-        const studName = $("#std").val();
-        const class_name = $("#class").val();
-        const section_ = $("#section").val();
-        const admission = $("#admin").val();
-        const dup_receipt = $("#dup_receipt").val();
         const pending_amt2 = $("#pending").val();
-        if (payment_value == "0") {
-            insert_sno1 =table1.data().length;
+        const fees_selected = $("#type").val();
+        if (pending_amt2 != 0 || fees_selected.length > 0) {
+            var decide = $("#decide").val();
+            const payment = $("#payment");
+            var payment_value = payment.val();
+            console.log("the payment mode value" + payment_value);
+            const [types_array, types_values] = fees_amt_prepare();
+            console.log(`the type values ${types_array}`);
+            cashList = types_values.join(",");
+            const types_value = types_array.join(",");
+            console.log(types_value);
+            var data_form;
             if (decide == "1") {
-                data_form.push({name:'old_ad',value:ad});
-                data_form.push({name:'sno1',value:sno1});
-                data_form.push({name:'date',value:today});             
-                data_form.push({name:'admission',value:admission});             
-                data_form.push({name:'std',value:studName});             
-                data_form.push({name:'class',value:class_name});             
-                data_form.push({name:'section', value:section_});  
-                data_form.push({name:'decide', value:decide});  
-                data_form.push({name:'dup_receipt', value:dup_receipt});  
+                data_form = [];
             }
             else {
-                data_form.push({ name: 'insert_sno1', value: parseInt(insert_sno1) });
-                data_form.push({ name: 'types', value: types_value});
-                data_form.push({ name: 'cashList', value: cashList});
-                data_form.push({ name: 'pending_amt', value: pending_amt2});
+                data_form = $("#collection_data").serializeArray();
             }
-            $.ajax({
-                url: "./backend/db/collection/cash/cash_table.php",
-                type: "post",
-                data: data_form,
-                dataType: "json",
-                beforeSend: function () {
-                    $("#collection_submit").find(".text").val("Loading..");
-                },
-                success: function (data) {
-                    console.log(data);
-                    if (decide == "0") {
-                        const message = data["message"] ?? [null];
-                        const res = data["row"] ?? [null];
-                        if (res[0] == 0) {
-                            table1.row.add(res[1]).draw(false);
-                            insert_invoice(res[1],"Cash");
-                            printout("#invoice_print", print_config);
-                            $("#fees_invoice .invoice_table:last-child").remove();
-                        }
-                        if (message[0] == 404) {
-                            Toast.fire({
-                                title: "Cash Table",
-                                html: `<p class='alert_content'>${message[1]}</p>`,
-                                icon: "error",
-                                customClass: {
-                                    timerProgressBar: 'bar_error',
-                                    icon: "icon_error"
-                                }
-                            });
-                        }
-                        else if (message[0] == 101) {
-                            Toast.fire({
-                                title: "Cash Table",
-                                html: `<p class='alert_content'>${message[1]}</p>`,
-                                icon: "success",
-                                customClass: {
-                                    timerProgressBar: 'bar_success',
-                                    icon: "icon_success"
-                                }
-                            });
-                        }
-                        else if (message[0] == 505) {
-                            Swal.fire({
-                                title: "ERROR",
-                                html: `<p class='alert_content'>${message[1]}</p>`,
-                                icon: "error",
-                                customClass: {
-                                    icon: "icon_error",
-                                    timerProgressBar: 'bar_error'
+       
+            var update_form = new FormData();
+            const studName = $("#std").val();
+            const class_name = $("#class").val();
+            const section_ = $("#section").val();
+            const admission = $("#admin").val();
+            const dup_receipt = $("#dup_receipt").val();
+            if (payment_value == "0") {
+                insert_sno1 = table1.data().length;
+                if (decide == "1") {
+                    data_form.push({ name: 'old_ad', value: ad });
+                    data_form.push({ name: 'sno1', value: sno1 });
+                    data_form.push({ name: 'date', value: today });
+                    data_form.push({ name: 'admission', value: admission });
+                    data_form.push({ name: 'std', value: studName });
+                    data_form.push({ name: 'class', value: class_name });
+                    data_form.push({ name: 'section', value: section_ });
+                    data_form.push({ name: 'decide', value: decide });
+                    data_form.push({ name: 'dup_receipt', value: dup_receipt });
+                }
+                else {
+                    data_form.push({ name: 'insert_sno1', value: parseInt(insert_sno1) });
+                    data_form.push({ name: 'types', value: types_value });
+                    data_form.push({ name: 'cashList', value: cashList });
+                    data_form.push({ name: 'pending_amt', value: pending_amt2 });
+                }
+                $.ajax({
+                    url: "./backend/db/collection/cash/cash_table.php",
+                    type: "post",
+                    data: data_form,
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#collection_submit").find(".text").val("Loading..");
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (decide == "0") {
+                            const message = data["message"] ?? [null];
+                            const res = data["row"] ?? [null];
+                            if (res[0] == 0) {
+                                table1.row.add(res[1]).draw(false);
+                                insert_invoice(res[1], "Cash");
+                                printout("#invoice_print", print_config);
+                                $("#fees_invoice .invoice_table:last-child").remove();
+                            }
+                            if (message[0] == 404) {
+                                Toast.fire({
+                                    title: "Cash Table",
+                                    html: `<p class='alert_content'>${message[1]}</p>`,
+                                    icon: "error",
+                                    customClass: {
+                                        timerProgressBar: 'bar_error',
+                                        icon: "icon_error"
+                                    }
+                                });
+                            }
+                            else if (message[0] == 101) {
+                                Toast.fire({
+                                    title: "Cash Table",
+                                    html: `<p class='alert_content'>${message[1]}</p>`,
+                                    icon: "success",
+                                    customClass: {
+                                        timerProgressBar: 'bar_success',
+                                        icon: "icon_success"
+                                    }
+                                });
+                            }
+                            else if (message[0] == 505) {
+                                Swal.fire({
+                                    title: "ERROR",
+                                    html: `<p class='alert_content'>${message[1]}</p>`,
+                                    icon: "error",
+                                    customClass: {
+                                        icon: "icon_error",
+                                        timerProgressBar: 'bar_error'
 
-                                }
-                            });
-                        }
-                        $("#collection_data")[0].reset();
+                                    }
+                                });
+                            }
+                            $("#collection_data")[0].reset();
 
-                    } else {
-                        const message = data["message"] ?? [null];
-                        const res = data["row"] ?? [null];
-                        let current_value;
-                        if (res[0] == 0) {
-                            current_value = table1.row(update_btn.parents("tr"));
-                            let ind = 2;
-                            let add = 0;
-                            const update_val_arr = res[1];
-                            update_val_arr.forEach(function (value, colIndex) {
-                                table1.cell({ row: current_value.index(), column: (colIndex + ind + add) }).data(value);
-                                add++;
-                            });
-                            table1.draw(false);
-                            $("#invoice_receipt").text(receipt + "/" + update_val_arr[0]);
-                            $("#invoice_name").text(update_val_arr[1]);
-                            $("#invoice_sec").text(update_val_arr[2]);
-                            const clone_elm = $(".invoice_table").clone();
-                            $("#fees_invoice").append(clone_elm);
-                            printout("#invoice_print", print_config);
-                            $("#fees_invoice .invoice_table:last-child").remove();
-                        }
-                        if (message[0] == 101) {
-                            Toast.fire({
-                                title: "Cash Table",
-                                html: `<p class='alert_content'>${message[1]}</p>`,
-                                icon: "success",
-                                customClass: {
-                                    timerProgressBar: 'bar_success',
-                                    icon: "icon_success"
-                                }
-                            });
-                        }
-                        else if (message[1] == 404) {
-                            Toast.fire({
-                                title: "Cash Table",
-                                html: `<p class='alert_content'>${message[1]}</p>`,
-                                icon: "error",
-                                customClass: {
-                                    timerProgressBar: 'bar_error',
-                                    icon: "icon_error"
-                                }
-                            });
-                        }
+                        } else {
+                            const message = data["message"] ?? [null];
+                            const res = data["row"] ?? [null];
+                            let current_value;
+                            if (res[0] == 0) {
+                                current_value = table1.row(update_btn.parents("tr"));
+                                let ind = 2;
+                                let add = 0;
+                                const update_val_arr = res[1];
+                                update_val_arr.forEach(function (value, colIndex) {
+                                    table1.cell({ row: current_value.index(), column: (colIndex + ind + add) }).data(value);
+                                    add++;
+                                });
+                                table1.draw(false);
+                                $("#invoice_receipt").text(receipt + "/" + update_val_arr[0]);
+                                $("#invoice_name").text(update_val_arr[1]);
+                                $("#invoice_sec").text(update_val_arr[2]);
+                                const clone_elm = $(".invoice_table").clone();
+                                $("#fees_invoice").append(clone_elm);
+                                printout("#invoice_print", print_config);
+                                $("#fees_invoice .invoice_table:last-child").remove();
+                            }
+                            if (message[0] == 101) {
+                                Toast.fire({
+                                    title: "Cash Table",
+                                    html: `<p class='alert_content'>${message[1]}</p>`,
+                                    icon: "success",
+                                    customClass: {
+                                        timerProgressBar: 'bar_success',
+                                        icon: "icon_success"
+                                    }
+                                });
+                            }
+                            else if (message[1] == 404) {
+                                Toast.fire({
+                                    title: "Cash Table",
+                                    html: `<p class='alert_content'>${message[1]}</p>`,
+                                    icon: "error",
+                                    customClass: {
+                                        timerProgressBar: 'bar_error',
+                                        icon: "icon_error"
+                                    }
+                                });
+                            }
                                                 
-                        $("#collection_data")[0].reset();
-                        $('#collection-form').css('display', 'none');
-                        const payment = $("#payment");
-                        payment.prop("disabled", false);
-                        $("#admin").prop("readonly", false);
-                        $("#type").prop("disabled", false);
-                        $("#class").prop("disabled", false);
-                        //terms field
-                        $("#t1").prop("readonly", false);
-                        $("#t2").prop("readonly", false);
-                        $("#t3").prop("readonly", false);
-                    }
+                            $("#collection_data")[0].reset();
+                            $('#collection-form').css('display', 'none');
+                            const payment = $("#payment");
+                            payment.prop("disabled", false);
+                            $("#admin").prop("readonly", false);
+                            $("#type").prop("disabled", false);
+                            $("#class").prop("disabled", false);
+                            //terms field
+                            $("#t1").prop("readonly", false);
+                            $("#t2").prop("readonly", false);
+                            $("#t3").prop("readonly", false);
+                        }
                         $("#collection_submit").val("Save");
                     }
                 });
-        }
-        else
-        {
-            
-            insert_sno2 =table2.data().length;
-            
-            if (decide == "1")
-            {
-                data_form.push({name:'old_ad',value:ad});
-                data_form.push({name:'sno2',value:sno2});
-                data_form.push({name:'date',value:today});             
-                data_form.push({name:'admission',value:admission});             
-                data_form.push({name:'std',value:studName});             
-                data_form.push({name:'class',value:class_name});             
-                data_form.push({name:'section', value:section_});  
-                data_form.push({ name: 'decide', value: decide });
-                data_form.push({name:'dup_receipt', value:dup_receipt});  
             }
-            else{
-                data_form.push({ name: 'insert_sno2', value: insert_sno2 });
-                data_form.push({ name: 'cashList', value: cashList});
-                data_form.push({ name: 'types', value: types_value });
-                data_form.push({ name: 'pending_amt', value: pending_amt2});
-            }
-        // console.log("hi pushparaj")
-        $.ajax({
-            url: "./backend/db/collection/cheque_online/cheque_table.php",
-            type: "post",
-            dataType:"json",    
-            data: data_form,
-            beforeSend: function () {
-                $("#collection_submit").val("Loading..");
-            },
-            success: function (data) {
-                    console.log(data);
-                if (decide == "0") {
-                    const message = data["message"] ?? [null];
-                    const res = data["row"] ?? [null];
-                    if (res[0] == 0) {
-                        table2.row.add(res[1]).draw(false);
-                            insert_invoice(res[1],"Cheque/Online");
-                        printout("#invoice_print", print_config);
-                        $("#fees_invoice .invoice_table:last-child").remove();
-                        
-                    }
-                    if (message[0] == 404) {
-                        Toast.fire({
-                            title: "Cheque/online Table",
-                            html: `<p class='alert_content'>${message[1]}</p>`,
-                            icon: "error",
-                            customClass: {
-                                timerProgressBar: 'bar_error',
-                                icon: "icon_error"
-                            }
-                        });
-                    }
-                    else if (message[0] == 101) {
-                        Toast.fire({
-                            title: "Cheque/online Table",
-                            html: `<p class='alert_content'>${message[1]}</p>`,
-                            icon: "success",
-                            customClass: {
-                                timerProgressBar: 'bar_success',
-                                icon: "icon_success"
-                            }
-                        });
-                    }
-                    else if (message[0] == 505) {
-                        Swal.fire({
-                            title: "ERROR",
-                            html: `<p class='alert_content'>${message[1]}</p>`,
-                            icon: "error",
-                            customClass: {
-                                icon: "icon_error",
-                                timerProgressBar: 'bar_error',
-                            }
-                        });
-                    }
-                    $("#collection_data")[0].reset();
-                } else {
-                    const message = data["message"] ?? [null];
-                    const res = data["row"] ?? [null];
-                    let current_value;
-                    if (res[0] == 0) {
-                        console.log("the reponse of the cheque/Online data updation" + res[1]);
-                        current_value = table2.row(update_btn.parents("tr"));
-                        const update_val_arr = res[1];
-                        let ind = 2;
-                        let add = 0;
-                        update_val_arr.forEach(function (value, colIndex) {
-                            table2.cell({ row: current_value.index(), column: (colIndex + ind + add) }).data(value);
-                            add++;
-                        });
-                        table2.draw(false);
-                        $("#invoice_receipt").text(receipt +"/"+update_val_arr[0]);
-                        $("#invoice_name").text(update_val_arr[1]);
-                        $("#invoice_sec").text(update_val_arr[2]);
-                        const clone_elm = $(".invoice_table").clone();
-                        $("#fees_invoice").append(clone_elm);
-                        printout("#invoice_print", print_config);
-                        $("#fees_invoice .invoice_table:last-child").remove();
-                    }
-                    if (message[0] == 101) {
-                        console.log("message showing");
-                        Toast.fire({
-                            title: "Cheque/online Table",
-                            html: `<p class='alert_content'>${message[1]}</p>`,
-                            icon: "success",
-                            customClass: {
-                                timerProgressBar: 'bar_success',
-                                icon: "icon_success"
-                            }
-                        });
-                    }
-                    else if (message[1] == 404) {
-                        Toast.fire({
-                            title: "Cheque/online Table",
-                            html: `<p class='alert_content'>${message[1]}</p>`,
-                            icon: "error",
-                            customClass: {
-                                timerProgressBar: 'bar_error',
-                                icon: "icon_error"
-                            }
-                        });
-                    }
-                    $("#collection_data")[0].reset();
-                    $('#collection-form').css('display', 'none');
-                    const payment = $("#payment");
-                    payment.prop("disabled", false);
-                    $("#admin").prop("readonly", false);
-                    $("#type").prop("disabled", false);
-                    $("#class").prop("disabled", false);
-                    //terms field
-                    $("#t1").prop("readonly", false);
-                    $("#t2").prop("readonly", false);
-                    $("#t3").prop("readonly", false);
+            else {
+            
+                insert_sno2 = table2.data().length;
+            
+                if (decide == "1") {
+                    data_form.push({ name: 'old_ad', value: ad });
+                    data_form.push({ name: 'sno2', value: sno2 });
+                    data_form.push({ name: 'date', value: today });
+                    data_form.push({ name: 'admission', value: admission });
+                    data_form.push({ name: 'std', value: studName });
+                    data_form.push({ name: 'class', value: class_name });
+                    data_form.push({ name: 'section', value: section_ });
+                    data_form.push({ name: 'decide', value: decide });
+                    data_form.push({ name: 'dup_receipt', value: dup_receipt });
                 }
-                $("#collection_submit").val("Save");
+                else {
+                    data_form.push({ name: 'insert_sno2', value: insert_sno2 });
+                    data_form.push({ name: 'cashList', value: cashList });
+                    data_form.push({ name: 'types', value: types_value });
+                    data_form.push({ name: 'pending_amt', value: pending_amt2 });
+                }
+                // console.log("hi pushparaj")
+                $.ajax({
+                    url: "./backend/db/collection/cheque_online/cheque_table.php",
+                    type: "post",
+                    dataType: "json",
+                    data: data_form,
+                    beforeSend: function () {
+                        $("#collection_submit").val("Loading..");
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (decide == "0") {
+                            const message = data["message"] ?? [null];
+                            const res = data["row"] ?? [null];
+                            if (res[0] == 0) {
+                                table2.row.add(res[1]).draw(false);
+                                insert_invoice(res[1], "Cheque/Online");
+                                printout("#invoice_print", print_config);
+                                $("#fees_invoice .invoice_table:last-child").remove();
+                        
+                            }
+                            if (message[0] == 404) {
+                                Toast.fire({
+                                    title: "Cheque/online Table",
+                                    html: `<p class='alert_content'>${message[1]}</p>`,
+                                    icon: "error",
+                                    customClass: {
+                                        timerProgressBar: 'bar_error',
+                                        icon: "icon_error"
+                                    }
+                                });
+                            }
+                            else if (message[0] == 101) {
+                                Toast.fire({
+                                    title: "Cheque/online Table",
+                                    html: `<p class='alert_content'>${message[1]}</p>`,
+                                    icon: "success",
+                                    customClass: {
+                                        timerProgressBar: 'bar_success',
+                                        icon: "icon_success"
+                                    }
+                                });
+                            }
+                            else if (message[0] == 505) {
+                                Swal.fire({
+                                    title: "ERROR",
+                                    html: `<p class='alert_content'>${message[1]}</p>`,
+                                    icon: "error",
+                                    customClass: {
+                                        icon: "icon_error",
+                                        timerProgressBar: 'bar_error',
+                                    }
+                                });
+                            }
+                            $("#collection_data")[0].reset();
+                        } else {
+                            const message = data["message"] ?? [null];
+                            const res = data["row"] ?? [null];
+                            let current_value;
+                            if (res[0] == 0) {
+                                console.log("the reponse of the cheque/Online data updation" + res[1]);
+                                current_value = table2.row(update_btn.parents("tr"));
+                                const update_val_arr = res[1];
+                                let ind = 2;
+                                let add = 0;
+                                update_val_arr.forEach(function (value, colIndex) {
+                                    table2.cell({ row: current_value.index(), column: (colIndex + ind + add) }).data(value);
+                                    add++;
+                                });
+                                table2.draw(false);
+                                $("#invoice_receipt").text(receipt + "/" + update_val_arr[0]);
+                                $("#invoice_name").text(update_val_arr[1]);
+                                $("#invoice_sec").text(update_val_arr[2]);
+                                const clone_elm = $(".invoice_table").clone();
+                                $("#fees_invoice").append(clone_elm);
+                                printout("#invoice_print", print_config);
+                                $("#fees_invoice .invoice_table:last-child").remove();
+                            }
+                            if (message[0] == 101) {
+                                console.log("message showing");
+                                Toast.fire({
+                                    title: "Cheque/online Table",
+                                    html: `<p class='alert_content'>${message[1]}</p>`,
+                                    icon: "success",
+                                    customClass: {
+                                        timerProgressBar: 'bar_success',
+                                        icon: "icon_success"
+                                    }
+                                });
+                            }
+                            else if (message[1] == 404) {
+                                Toast.fire({
+                                    title: "Cheque/online Table",
+                                    html: `<p class='alert_content'>${message[1]}</p>`,
+                                    icon: "error",
+                                    customClass: {
+                                        timerProgressBar: 'bar_error',
+                                        icon: "icon_error"
+                                    }
+                                });
+                            }
+                            $("#collection_data")[0].reset();
+                            $('#collection-form').css('display', 'none');
+                            const payment = $("#payment");
+                            payment.prop("disabled", false);
+                            $("#admin").prop("readonly", false);
+                            $("#type").prop("disabled", false);
+                            $("#class").prop("disabled", false);
+                            //terms field
+                            $("#t1").prop("readonly", false);
+                            $("#t2").prop("readonly", false);
+                            $("#t3").prop("readonly", false);
+                        }
+                        $("#collection_submit").val("Save");
+                    }
+                })
             }
-        })
+        }
+        else {
+            Toast.fire({
+                title: "Warning",
+                html: `<p class='alert_content'>Try to select any fee in lists or give Pending Amount</p>`,
+                icon: "warning",
+                customClass: {
+                    timerProgressBar: 'bar_warning',
+                    icon: "icon_warning"
+                }
+            });
         }
     });
     $("body").on("click", ".delete", function (e) {

@@ -42,10 +42,5 @@ new_btn.addEventListener("click", () => {
     form.reset();
     types_select.innerHTML = "<option value=' style='border: none;'>select the class to get fees type</option>";
     console.log(type);
-    if (select.getAttribute("key") == 0)
-    {
-        type.setAttribute("required","");
-        amt1.setAttribute("required","");
-    }
     collection.style.display = "flex";
 });

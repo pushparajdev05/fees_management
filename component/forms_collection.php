@@ -68,7 +68,7 @@
                     <label for="type">Type of fees</label>
                 </div>
                 <div class="col2 types">
-                    <select name="type" id="type" class="type" multiple required>
+                    <select name="type" id="type" class="type" multiple>
                         <option value="" style="border: none;">select the class to get fees type</option>
                     </select>
                     <div class="terms">
@@ -91,7 +91,7 @@
                     <label for="amt">Amount</label>
                 </div>
                 <div class="col2">
-                    <input name="amt" id="amt" type="number" readonly>
+                    <input name="amt" id="amt" type="number" readonly required>
                 </div>
             </div>
             <div class="input row">
