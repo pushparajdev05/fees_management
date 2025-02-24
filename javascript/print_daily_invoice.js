@@ -1,11 +1,12 @@
 import { Toast } from "../backend/db/collection/sweetalert_config.js";
 $(document).ready(()=>
 {
-    $(".print_out").eq(1).click((e) => {
+    $("#print").click((e) => {
         const ondate = document.getElementById("filter_date");
+        console.log(ondate.value);
         if (ondate.value) {
             const date = new Date(ondate.value);
-            // console.log(date);
+            console.log(date);
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');

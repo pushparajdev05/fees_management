@@ -16,7 +16,12 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-
+.form_header
+{
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+}
 ::placeholder {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
@@ -37,7 +42,7 @@
   display: flex;
   align-items: center;
   padding-left: 10px;
-  transition: 0.2s ease-in-out;
+  /* transition: 0.2s ease-in-out; */
 }
 
 .input {
@@ -51,10 +56,6 @@
 
 .input:focus {
   outline: none;
-}
-
-.inputForm:focus-within {
-  border: 2px solid #2d79f3;
 }
 
 .flex-row {
@@ -80,7 +81,7 @@
 }
 
 .button-submit {
-  margin: 20px 0 10px 0;
+  /* margin: 20px 0 10px 0; */
   background-color: rgb(42, 65, 45);
   border: none;
   color: white;
@@ -192,4 +193,144 @@ body
   text-align:center;
   font-size:20px;
   font-weight: bold;
+}
+#sign_in
+{
+    margin-top:10px;
+}
+.error_msg
+{
+  font-size:14px;
+  color:red;
+  font-weight: 500;
+  margin-top:-10px;
+  margin-left:5px;
+}
+/* radio button style */
+
+/* From Uiverse.io by cbolson */  
+#radio_btn {
+  --_clr-primary: #000000;
+  --_clr-hover: #006010;
+  --_clr-checked: #003026;
+  display:flex;
+}
+#radio_btn > div {
+  --_clr-current: var(--_clr-primary);
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+#radio_btn > div + div {
+  margin-left:20px;
+}
+#radio_btn label {
+  cursor: pointer;
+  color: var(--_clr-current);
+  transition: color 150ms ease-in-out;
+}
+/* styled radio */
+#radio_btn input[type="radio"] {
+  appearance: none;
+  outline: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  aspect-ratio: 1;
+  padding: 0.25rem;
+  background: transparent;
+  border: 1px solid var(--_clr-current);
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  position: relative;
+}
+#radio_btn input[type="radio"]::after {
+  content: "";
+  position: absolute;
+  inset: 0.25rem;
+  opacity: 0;
+  scale: 0;
+  transition:
+    opacity 150ms ease-in-out,
+    scale 150ms ease-in-out;
+  background-color: var(--_clr-checked);
+  border-radius: inherit;
+}
+
+#radio_btn label:hover,
+#radio_btn input[type="radio"]:focus-visible,
+#radio_btn input[type="radio"]:focus-visible + label,
+#radio_btn input[type="radio"]:hover,
+#radio_btn input[type="radio"]:hover + label {
+  --_clr-current: var(--_clr-hover);
+}
+#radio_btn input[type="radio"]:focus-visible::after,
+#radio_btn input[type="radio"]:hover::after {
+  opacity: 0.5;
+  scale: 1;
+  background-color: var(--_clr-hover);
+}
+
+#radio_btn input[type="radio"]:checked + label:not(:hover),
+#radio_btn input[type="radio"]:checked:not(:hover) {
+  --_clr-current: var(--_clr-checked);
+}
+#radio_btn input[type="radio"]:checked::after {
+  opacity: 1;
+  scale: 1;
+}
+
+#radio_btn label
+{
+  font-size:18px;
+  font-weight:500;
+}
+
+/* sweetalert styles  */
+.bar_success
+{
+        background-color:green;
+}
+.bar_warning
+{
+background-color:orange;
+
+}
+.bar_error
+{
+    background-color:red;
+
+}
+.icon_warning
+{
+ color:orange !important;
+ border-color: orange !important ;
+}
+.icon_success
+{
+ border-color: green !important ;
+}
+.swal2-success-circular-line,.swal2-success-line-tip,.swal2-success-line-long
+{
+background-color: green !important;
+}
+.swal2-success-ring
+{
+    border-color:rgba(14, 153, 14, 0.588) !important;
+}
+.icon_error
+{
+ border-color: red !important ;
+}
+.swal2-x-mark-line-left,.swal2-x-mark-line-right
+{
+    background-color: red !important;
+}
+.alert_content
+{
+    font-size:17px;
+    color:black;
+    text-align:justify;
 }
