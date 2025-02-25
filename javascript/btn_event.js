@@ -18,19 +18,18 @@ cheque_table.style.display = "none";
 const event1 = new Event("input");
 const switch_event = new Event("click");
 //switch button 
-
+const visited_user = window.user;
 
 switch_btn.addEventListener("click", (e) => {
     e.preventDefault();
-    if(select.getAttribute("key")==0)
-    {
+
+    if (select.getAttribute("key") == 0) {
         // select1.style.animation = "select1 .2s forwards";
         // select2.style.animation = "select2 .2s forwards";
         console.log(search_table1[0]);
         cheque_table.style.display = "block";
         cash_table.style.display = "none";
-        if (Table2.style.width == "0px")
-        {
+        if (Table2.style.width == "0px") {
             Table2.style.width = "100%";
             // console.log("hi hello");
         }
@@ -43,8 +42,7 @@ switch_btn.addEventListener("click", (e) => {
         document.cookie = "switch=1";
         console.log(getCookie("switch"));
     }
-    else
-    {
+    else {
         // select1.style.animation = "select1_rev .2s forwards";
         // select2.style.animation = "select2_rev .2s forwards";
         console.log(search_table1[1]);;
@@ -64,60 +62,65 @@ switch_btn.addEventListener("click", (e) => {
 
 
     }
+    
 });
 
 //filter button
 
 filter_btn[0].addEventListener("click", () => {
-    if (filter_date.value) {
-        const date = new Date(filter_date.value);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const formattedDate = `${day}/${month}/${year}`;
-        if (select.getAttribute("key") == 0) {
-            search_table1[0].value = formattedDate;
-            search_table1[0].dispatchEvent(event1);
+    if (visited_user == "admin") {
+        if (filter_date.value) {
+            const date = new Date(filter_date.value);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const formattedDate = `${day}/${month}/${year}`;
+            if (select.getAttribute("key") == 0) {
+                search_table1[0].value = formattedDate;
+                search_table1[0].dispatchEvent(event1);
+            }
+            else {
+                search_table1[1].value = formattedDate;
+                search_table1[1].dispatchEvent(event1);
+            }
         }
         else {
-            search_table1[1].value = formattedDate;
-            search_table1[1].dispatchEvent(event1);
+            Toast.fire({
+                position: "top",
+                html: "<p class='alert_content'>kindly select the date to fiter the table on date</p>",
+                icon: "warning",
+                customClass: {
+                    timerProgressBar: 'bar_warning',
+                    icon: "icon_warning"
+                }
+            });
         }
-    }
-    else {
-        Toast.fire({
-            position: "top",
-            html: "<p class='alert_content'>kindly select the date to fiter the table on date</p>",
-            icon: "warning",
-            customClass: {
-                timerProgressBar: 'bar_warning',
-                icon: "icon_warning"
-            }
-        });
     }
 });
 filter_btn[1].addEventListener("click", () => {
-    const filter_val = filter2.options[filter2.selectedIndex].value;
-    if (filter_val) {
-        if (select.getAttribute("key") == 0) {
-            search_table1[0].value = filter_val;
-            search_table1[0].dispatchEvent(event1);
+    if (visited_user == "admin") {
+        const filter_val = filter2.options[filter2.selectedIndex].value;
+        if (filter_val) {
+            if (select.getAttribute("key") == 0) {
+                search_table1[0].value = filter_val;
+                search_table1[0].dispatchEvent(event1);
+            }
+            else {
+                search_table1[1].value = filter_val;
+                search_table1[1].dispatchEvent(event1);
+            }
         }
         else {
-            search_table1[1].value = filter_val;
-            search_table1[1].dispatchEvent(event1);
-        }
-    }
-    else {
-        Toast.fire({
+            Toast.fire({
                 position: "top",
                 html: "<p class='alert_content'>kindly select the valid option to fiter the table</p>",
                 icon: "warning",
                 customClass: {
                     timerProgressBar: 'bar_warning',
-                    icon:"icon_warning"
+                    icon: "icon_warning"
                 }
             });
+        }
     }
 });
 document.addEventListener("DOMContentLoaded", function () {

@@ -1,4 +1,9 @@
 <?php
+session_start();
+if(!isset($_SESSION["user"]))
+{
+    header("location: index.php");
+}
 include "./backend/db/defaulters/db_connection.php";
 $class_array = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X","XI","XIAC","XIDE", "XIIAC","XIIDE"];
 $class_out = [];
@@ -28,7 +33,7 @@ $json_array_out = json_encode($class_out);
 </head>
 <body>
         <?php
-        include "./component/header.html";
+        include "./component/header.php";
     ?>
      <section id="overall_table_form">
         <?php
@@ -180,6 +185,10 @@ $json_array_out = json_encode($class_out);
         </div>
             
     </div>
+    <script>
+            window.user="<?= $_SESSION["user"]?>";
+            window.resultSet=<?php echo $json_array_out?>;
+    </script>
     <script src="./asset/sweetalert/sweetalert2.all.min.js"></script>
     <script src="./javascript/jquery-3.7.1.js"></script>
     <script type="module" src="./javascript/overall.js"></script>
@@ -191,8 +200,7 @@ $json_array_out = json_encode($class_out);
     <script src="./datatable/javascript/pdfmake.min.js"></script>
     <script src="./datatable/javascript/vfs_fonts.js"></script>
     <script src="./datatable/javascript/buttons.html5.min.js"></script>  
-    <script>
-        window.resultSet=<?php echo $json_array_out?>;
-    </script>
+    <script src ="./javascript/logout.js"></script>
+
 </body>
 </html>

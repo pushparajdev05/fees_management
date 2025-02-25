@@ -1,3 +1,11 @@
+<?php
+session_start();
+if(!isset($_SESSION["user"]))
+{
+    header("location: index.php");
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,18 +18,11 @@
     <link rel="stylesheet" href="./css/index/underline.css">
     <link rel="stylesheet" href="./asset/sweetalert/sweetalert2.min.css">
     <title>Dashboard</title>
-    <!-- <script type="text/javascript">
-        function preventBack() {
-            window.history.forward();
-        }
-        setTimeout("preventBack()", 0);
-        window.onunload = function () { null };
-    </script> -->
 </head>
 <body>
     <div id="header">
         <?php
-        include "./component/header.html";
+        include "./component/header.php";
     ?>
     <section class="one">
         <div class="text">
@@ -74,6 +75,11 @@
         </div>
     </section>
     <!-- <script src="./javascript/visited.js"></script> -->
+     <script>
+            window.user="<?= $_SESSION["user"]?>";
+
+     </script>
+    <script src="./javascript/jquery-3.7.1.js"></script>
     <script src="./asset/sweetalert/sweetalert2.all.min.js"></script>
          <script>
         function redirectTo()
@@ -82,6 +88,7 @@
             console.log(location.href);
         }
     </script>
+    <script src ="./javascript/logout.js"></script>
 
 </body>
 </html>

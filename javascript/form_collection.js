@@ -11,36 +11,40 @@ const readonly_Element = [];
 element_id.forEach((value,index) => {
     readonly_Element[index] = document.getElementById(value);
 });
-
+const visited_user = window.user;
 
 // close button event
 
 close.addEventListener("click", (event) => {
     event.preventDefault();
-    collection.style.display = "none";
-    payment_input.removeAttribute("disabled", "");
-    // console.log(readonly_Element);
-    readonly_Element.forEach((value,index) => {
-        if (index == 1) {
-            value.removeAttribute("disabled","");   
-        }
-        else {
-            value.removeAttribute("readonly","");   
-        }
-    });
-    console.log("closed");
-    form.reset();
-    types_select.innerHTML = "<option value=' style='border: none;'>select the class to get fees type</option>";
+    if (visited_user == "admin") {
+        collection.style.display = "none";
+        payment_input.removeAttribute("disabled", "");
+        // console.log(readonly_Element);
+        readonly_Element.forEach((value, index) => {
+            if (index == 1) {
+                value.removeAttribute("disabled", "");
+            }
+            else {
+                value.removeAttribute("readonly", "");
+            }
+        });
+        console.log("closed");
+        form.reset();
+        types_select.innerHTML = "<option value=' style='border: none;'>select the class to get fees type</option>";
+    }
 });
     
 //new button event
 
 new_btn.addEventListener("click", () => {
     // event.preventDefault();
-    const type = document.getElementById("type");
-    decide.value = "0";
-    form.reset();
-    types_select.innerHTML = "<option value=' style='border: none;'>select the class to get fees type</option>";
-    console.log(type);
-    collection.style.display = "flex";
+    if (visited_user == "admin") {
+        const type = document.getElementById("type");
+        decide.value = "0";
+        form.reset();
+        types_select.innerHTML = "<option value=' style='border: none;'>select the class to get fees type</option>";
+        console.log(type);
+        collection.style.display = "flex";
+    }
 });

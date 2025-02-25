@@ -1,4 +1,9 @@
 <?php
+session_start();
+if(!isset($_SESSION["user"]))
+{
+    header("location: index.php");
+}
 include "./backend/db/collection/db_connection.php";
 $class_array = ["LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X","XIAC","XIDE", "XIIAC","XIIDE"];
 $class_out = [];
@@ -72,7 +77,7 @@ $json_term = json_encode($term);
 </head>
 <body>
        <?php
-        include "./component/header.html";
+        include "./component/header.php";
     ?> 
     <section id="collection-form">
         <?php
@@ -365,6 +370,11 @@ $json_term = json_encode($term);
                 ?>
             </div>
         </div>
+            <script>
+        window.resultSet=<?php echo $json_array_out?>;
+            window.user="<?= $_SESSION["user"]?>";
+            console.log(window.user);
+    </script>
     <script src="./javascript/jquery-3.7.1.js"></script>
     <script src="./javascript/form_collection.js"></script>
     <script src="./asset/sweetalert/sweetalert2.all.min.js"></script>
@@ -380,6 +390,8 @@ $json_term = json_encode($term);
     <script type="module" src="./javascript/collection_data.js"></script>
     <script src="./javascript/printout.js"></script>
     <script type="module" src="./javascript/print_daily_invoice.js"></script>
+    <script src ="./javascript/logout.js"></script>
+
     <script>
         const resultSet=<?php echo $json_array_out?>;
         window.term_array=<?php echo $json_term?>;

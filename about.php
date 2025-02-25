@@ -1,3 +1,10 @@
+<?php
+session_start();
+if(!isset($_SESSION["user"]))
+{
+    header("location: index.php");
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,12 +15,14 @@
     <link rel="stylesheet" href="./css/navbars.css">
     <link rel="stylesheet" href="./css/transform.css">
     <link rel="stylesheet" href="./css/about/about.css">
+    <link rel="stylesheet" href="./asset/sweetalert/sweetalert2.min.css">
+
     <title>Document</title>
 </head>
 
 <body>
     <?php
-    include "./component/header.html";
+    include "./component/header.php";
     ?>
     <!-- <script src="./javascript/visited.js"></script> -->
 
@@ -251,6 +260,15 @@
             </div>
         </div>
     </section>
+    <script>
+            window.user="<?= $_SESSION["user"]?>";
+    </script>
+    <script src="./asset/sweetalert/sweetalert2.all.min.js"></script>
+
+    <script src="./javascript/jquery-3.7.1.js"></script>
+
+    <script src ="./javascript/logout.js"></script>
+
 </body>
 
 </html>

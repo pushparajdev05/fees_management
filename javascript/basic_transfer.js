@@ -11,5 +11,9 @@ close_form.addEventListener("click", (e) => {
 
 add_btn.addEventListener("click", (e) => {
     e.preventDefault();
-    overall_form.style.display = "flex";
+    const visited_user = window.user;
+    if (visited_user == "admin")
+    {
+        overall_form.style.display = "flex";
+    }
 });

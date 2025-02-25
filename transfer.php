@@ -1,4 +1,9 @@
 <?php
+session_start();
+if(!isset($_SESSION["user"]))
+{
+    header("location: index.php");
+}
 include "./backend/db/defaulters/db_connection.php";
 ?>
 <!DOCTYPE html>
@@ -19,7 +24,7 @@ include "./backend/db/defaulters/db_connection.php";
 </head>
 <body>
         <?php
-        include "./component/header.html";
+        include "./component/header.php";
     ?>
      <section id="overall_table_form">
         <?php
@@ -144,6 +149,9 @@ include "./backend/db/defaulters/db_connection.php";
         </div>
             
     </div>
+    <script>
+            window.user="<?= $_SESSION["user"]?>";
+    </script>
     <script src="./asset/sweetalert/sweetalert2.all.min.js"></script>
     <script src="./javascript/basic_transfer.js"></script>
     <script src="./javascript/jquery-3.7.1.js"></script>
@@ -155,5 +163,6 @@ include "./backend/db/defaulters/db_connection.php";
     <script src="./datatable/javascript/vfs_fonts.js"></script>
     <script src="./datatable/javascript/buttons.html5.min.js"></script>  
     <script type="module" src="./javascript/transfer_data.js"></script>
+    <script src ="./javascript/logout.js"></script>
 </body>
 </html>

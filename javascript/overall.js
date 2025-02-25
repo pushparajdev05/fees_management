@@ -34,414 +34,42 @@ var table2 = new DataTable('#defaulters_list',
     }
 );
 $(document).ready(function () {
-    var index = 0;
-    var update_btn;
-    const table_body=document.getElementById("tbody1");
-    const defaults_close = document.querySelector("#defaults_close svg");
-    const defaulter_table = document.getElementById("defaulter_table");
-    defaults_close.addEventListener("click", (e) => {
-        e.preventDefault();
-        defaulter_table.style.display = "none";
-        table2.rows().remove();
-        console.log("removed");
-    });
-    //TODO:n change event that is sort the table based on the selected option 
-
-    $("#save_csv").click(function () {
-        const csv_file = document.getElementById("overall_csv").files;
-        console.log(csv_file);
-        const file = new FormData();
-        const action = $("#mode").val();
-        file.append("action",action)
-        if (csv_file.length > 0) {
-            file.append("csv_file", csv_file[0]);
-            $.ajax({
-                type: 'POST',
-                url: 'backend/db/defaulters/overall_sheet.php',
-                data: file,
-                contentType: false,
-                processData: false,
-                success: function (res) {
-                    let taken = parseInt(res);
-                    console.log(res);
-                    if (taken == 1) {
-
-                        Toast.fire({
-                            html: `<p class='alert_content'>CSV data successfully loaded into the database!</p>`,
-                            icon: "success",
-                            customClass: {
-                                timerProgressBar: 'bar_success',
-                                icon: "icon_success"
-                            }
-                        });
-                    }
-                    else {
-                        Toast.fire({
-                            html: `<p class='alert_content'>${res}</p>`,
-                            icon: "error",
-                            customClass: {
-                                timerProgressBar: 'bar_error',
-                                icon: "icon_error"
-                            }
-                        });
-                    }
-                }
-            });
-        }
-        else {
-            Toast.fire({
-                position: "top",
-                html: `<p class='alert_content'>kindly select overall fees csv file first</p>`,
-                icon: "warning",
-                customClass: {
-                    timerProgressBar: 'bar_warning',
-                    icon: "icon_warning"
-                }
-            });
-        }
-    });
-    $("#calc_").click(function () {
-        const calc_option = $("#calc_select").val();
-        console.log(calc_option);
-        $.ajax(
-            {
-                url: "./backend/db/defaulters/calculation.php",
-                type: "post",
-                data:{option:calc_option},
-                dataType:'json',
-                beforeSend: function () {
-                    $("#calc_").find(".text").val("Loading..");
-                },
-                success: function (res) {
-                    console.log(res);
-                    if (res[0] == 200)
-                    {
-                        table2.destroy();
-                        $("#default_heading").text("Total Fee Collections and Defaulters");
-                        $("#defaulter_head").html(res[1]);
-                        $("#defaulter_body").html(res[2]);
-                        table2 = new DataTable('#defaulters_list',
-                            {
-                                ordering: false,
-                                pageLength: -1,
-                                layout:
-                                {
-                                    topStart: {
-                                        buttons: ['excel']
-                                    },
-                                    bottomEnd: null,
-                                    bottomStart: null
-                                },
-                            }
-                        );
-                        $("#defaulter_table").css("display", "block");
-                    }
-                    else if (res[0] == 201)
-                    {
-                        table2.destroy();
-                        $("#default_heading").text("Total Defaulters of Term I");
-                        $("#defaulter_head").html(res[1]);
-                        $("#defaulter_body").html(res[2]);
-                        table2 = new DataTable('#defaulters_list',
-                            {
-                                ordering: false,
-                                pageLength: -1,
-                                layout:
-                                {
-                                    topStart: {
-                                        buttons: ['excel']
-                                    },
-                                    bottomEnd: null,
-                                    bottomStart: null
-                                },
-                            }
-                        );
-                        $("#defaulter_table").css("display", "block");
-                    }
-                    else if (res[0] == 202)
-                    {
-                        table2.destroy();
-                        $("#default_heading").text("Total Defaulters of Term II");
-                        $("#defaulter_head").html(res[1]);
-                        $("#defaulter_body").html(res[2]);
-                        table2 = new DataTable('#defaulters_list',
-                            {
-                                ordering: false,
-                                pageLength: -1,
-                                layout:
-                                {
-                                    topStart: {
-                                        buttons: ['excel']
-                                    },
-                                    bottomEnd: null,
-                                    bottomStart: null
-                                },
-                            }
-                        );
-                        $("#defaulter_table").css("display", "block");
-                    }
-                    else if (res[0] == 203)
-                    {
-                        table2.destroy();
-                        $("#default_heading").text("Total Defaulters of Term III");
-                        $("#defaulter_head").html(res[1]);
-                        $("#defaulter_body").html(res[2]);
-                        table2 = new DataTable('#defaulters_list',
-                            {
-                                ordering: false,
-                                pageLength: -1,
-                                layout:
-                                {
-                                    topStart: {
-                                        buttons: ['excel']
-                                    },
-                                    bottomEnd: null,
-                                    bottomStart: null
-                                },
-                            }
-                        );
-                        $("#defaulter_table").css("display", "block");
-                    }
-                    else if (res[0] == 204)
-                    {
-                        table2.destroy();
-                        $("#default_heading").text("Total received of Class with Section");
-                        $("#defaulter_head").html(res[1]);
-                        $("#defaulter_body").html(res[2]);
-                        table2 = new DataTable('#defaulters_list',
-                            {
-                                ordering: false,
-                                pageLength: -1,
-                                layout:
-                                {
-                                    topStart: {
-                                        buttons: ['excel']
-                                    },
-                                    bottomEnd: null,
-                                    bottomStart: null
-                                },
-                            }
-                        );
-                        $("#defaulter_table").css("display", "block");
-                    }
-                    else if (res[0] == 205)
-                    {
-                        table2.destroy();
-                        $("#default_heading").text("Grand Total of All Students");
-                        $("#defaulter_head").html(res[1]);
-                        $("#defaulter_body").html(res[2]);
-                        table2 = new DataTable('#defaulters_list',
-                            {
-                                ordering: false,
-                                pageLength: -1,
-                                layout:
-                                {
-                                    topStart: {
-                                        buttons: ['excel']
-                                    },
-                                    bottomEnd: null,
-                                    bottomStart: null
-                                },
-                            }
-                        );
-                        $("#defaulter_table").css("display", "block");
-                    }
-                }
-            }
-        );
-    });
-    $("#clear_").click(function () {
-        const class_clear = $("#class_types").val();
-        Swal.fire({
-            title: `Are you sure to clear ${class_clear} class in table `,
-            showCancelButton: true,
-            confirmButtonText: "Clear",
-        }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-                $.ajax(
-                    {
-                        url: "./backend/db/defaulters/clear_class.php",
-                        type: "post",
-                        data: {class:class_clear},
-                        beforeSend: function () {
-                            $("#transfer_btn").find(".text").val("Loading..");
-                        },
-                        success: function (res) {
-                            console.log(res);
-                            const taken = parseInt(res);
-                            if (taken == 0) {
-                                window.resultSet[class_clear] = [];
-                                table1.clear().draw();
-                                Toast.fire({
-                                    html: `<p class='alert_content'>Records of ${class_clear} class cleared in overall table</p>`,
-                                    icon: "success",
-                                    customClass: {
-                                        timerProgressBar: 'bar_success',
-                                        icon: "icon_success"
-                                    }
-                                });
-                            }
-                            else {
-                                Toast.fire({
-                                    html: `<p class='alert_content'>Records of ${class_clear} class has not cleared in overall table</p>`,
-                                    icon: "error",
-                                    customClass: {
-                                        timerProgressBar: 'bar_error',
-                                        icon: "icon_error"
-                                    }
-                                });
-                            }
-                        }
-                    });
-            }
+    const visited_user = window.user;
+    if (visited_user == "admin") {
+        var index = 0;
+        var update_btn;
+        const table_body = document.getElementById("tbody1");
+        const defaults_close = document.querySelector("#defaults_close svg");
+        const defaulter_table = document.getElementById("defaulter_table");
+        defaults_close.addEventListener("click", (e) => {
+            e.preventDefault();
+            defaulter_table.style.display = "none";
+            table2.rows().remove();
+            console.log("removed");
         });
-    });
-    var update_sno = 0;
-    $("#overall_form_data").submit(function (e) {
-        e.preventDefault();
-        var decide = $("#decide").val();
-        const overall_data = $("#overall_form_data").serializeArray();
-        const input_date = document.getElementById("paid_date").value;
-        if (input_date != "")
-        {
-            let [year, month, day] = input_date.split('-');
-            var formattedDate = `${day}/${month}/${year}`;
-        }
-        else
-        {
-            var formattedDate = "nil";
-            }
-        overall_data.push({ name: 'formatted_date', value: formattedDate })
-        const row_length = table1.data().length;
-        if (decide == "0") {
-            overall_data.push({ name: 'arr_index', value: row_length });
-        }
-        else {
-            overall_data.push({ name: "sno", value: update_sno });
-            overall_data.push({ name: 'arr_index', value: index });
-            
-        }
-        $.ajax({
-            url: "./backend/db/defaulters/action.php",
-            type: "post",
-            data: overall_data,
-            dataType: "json",
-            beforeSend: function () {
-                $("#collection_submit").find(".text").val("Loading..");
-            },
-            success: function (res) {
-                console.log("Clicked");
-                if (res[0] == 1) {
-                    console.log(res);
-                    console.log("the decision"+decide);
-                    const selected_option = $("#class_types").val();
-                    const class_var = res[1][3];
-                    console.log("class is " + class_var);
-                    if (decide == "0") {
-                        console.log(selected_option == class_var);
-                        const current_row = res[1].slice();
-                        current_row.splice(16, 1);
-                        current_row.splice(0, 1);
-                        console.log("the current array is" + current_row);
-                        if (selected_option == class_var) {
-                        console.log("after splice"+current_row);
-                            table1.row.add(res[1]).draw(false);
-                        }
-                        window.resultSet[class_var].push(current_row);
-                        Toast.fire({
-                            html: `<p class='alert_content'>The data has inserted in overall Table</p>`,
-                            icon: "success",
-                            customClass: {
-                                timerProgressBar: 'bar_success',
-                                icon: "icon_success"
-                            }
-                        });
-                        $("#overall_form_data").trigger("reset");
-                    } else {
-                        const current_row = res[1].slice();
-                        current_row.splice(16, 1);
-                        current_row.splice(0, 1);
-                        console.log("the current array is" + current_row);
-                        if (selected_option == class_var) {
-                            console.log("after the splice" + res[1]);
-                            table1.row(update_btn.parents("tr")).data(res[1]).draw(false);
-                            window.resultSet[selected_option][index] = current_row;
-                            console.log(current_row);
-                        }
-                        else {
-                            window.resultSet[class_var].push(current_row);
-                            window.resultSet[selected_option].splice(index, 1);
-                            table1.row(update_btn.parents("tr")).remove().draw(false);
-                        }
-                        Toast.fire({
-                            html: `<p class='alert_content'>The data is updated in overall table</p>`,
-                            icon: "success",
-                            customClass: {
-                                timerProgressBar: 'bar_success',
-                                icon: "icon_success"
-                            }
-                        });
-                        $("#decide").val(0);
-                        $("#overall_form_data").trigger("reset");
-                        $('#overall_table_form').css('display', 'none');
-                    }
-                }
-                else if (res[0] = 404)
-                {
-                    Toast.fire({
-                        html: `<p class='alert_content'>${res[1]}</p>`,
-                        icon: "error",
-                        customClass: {
-                            timerProgressBar: 'bar_error',
-                            icon: "icon_error"
-                        }
-                    });
-                }
-                else {
-                    swal.fire({
-                        title: "ERROR",
-                        html: `<p class='alert_content'>${res}</p>`,
-                        icon: "error",
-                        customClass: {
-                            timerProgressBar: 'bar_success',
-                            icon: "icon_success"
-                        }
-                        
-                    });
-                }
-                $("#collection_submit").val("Save");
-                // console.log($("#overall_form_data"));
-            }
-        });
-    });
-    $("body").on("click", ".delete", function (e) {
-        const selected_option = $("#class_types").val();
-        e.preventDefault();
-        var ad = $(this).attr("ad");
-        index = $(this).attr("index");
-        let btn = $(this);
-        Swal.fire({
-            title: "Are you sure delete the transaction",
-            showCancelButton: true,
-            confirmButtonText: "Delete",
-        }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
+        //TODO:n change event that is sort the table based on the selected option 
+
+        $("#save_csv").click(function () {
+            const csv_file = document.getElementById("overall_csv").files;
+            console.log(csv_file);
+            const file = new FormData();
+            const action = $("#mode").val();
+            file.append("action", action)
+            if (csv_file.length > 0) {
+                file.append("csv_file", csv_file[0]);
                 $.ajax({
                     type: 'POST',
-                    url: './backend/db/defaulters/delete.php',
-                    data: { admin: ad },
-                    beforeSend: function () {
-                        $(btn).find(".text").text("Deleting...");
-                    },
+                    url: 'backend/db/defaulters/overall_sheet.php',
+                    data: file,
+                    contentType: false,
+                    processData: false,
                     success: function (res) {
-                        const taken = parseInt(res);
-                        if (taken == 0) {
-                            table1.row(btn.parents('tr')).remove().draw(false);
-                            window.resultSet[selected_option].splice(index, 1);
+                        let taken = parseInt(res);
+                        console.log(res);
+                        if (taken == 1) {
+
                             Toast.fire({
-                                html: `<p class='alert_content'>The data is deleted in overall table</p>`,
+                                html: `<p class='alert_content'>CSV data successfully loaded into the database!</p>`,
                                 icon: "success",
                                 customClass: {
                                     timerProgressBar: 'bar_success',
@@ -451,7 +79,7 @@ $(document).ready(function () {
                         }
                         else {
                             Toast.fire({
-                                html: `<p class='alert_content'>The data is not deleted in overall table</p>`,
+                                html: `<p class='alert_content'>${res}</p>`,
                                 icon: "error",
                                 customClass: {
                                     timerProgressBar: 'bar_error',
@@ -462,52 +90,418 @@ $(document).ready(function () {
                     }
                 });
             }
+            else {
+                Toast.fire({
+                    position: "top",
+                    html: `<p class='alert_content'>kindly select overall fees csv file first</p>`,
+                    icon: "warning",
+                    customClass: {
+                        timerProgressBar: 'bar_warning',
+                        icon: "icon_warning"
+                    }
+                });
+            }
         });
-    });
-    $("body").on("click", ".update", function (e) {
-        e.preventDefault();
-        console.log("update");
-        var ad = $(this).attr("ad");
-        index = $(this).attr("index");
-        update_btn = $(this);
-        console.log("index is" + index);
-        $("#decide").val(ad);
-        var row = $(this);
-        update_sno = row.closest("tr").find("td:eq(0)").text();
-        var admin = row.closest("tr").find("td:eq(1)").text();
-        $("#admission").val(admin);
-        var stu_name = row.closest("tr").find("td:eq(2)").text();
-        $("#stu_name").val(stu_name);
-        var class_ = row.closest("tr").find("td:eq(3)").text();
-        $("#class").val(class_);
-        var section = row.closest("tr").find("td:eq(4)").text();
-        $("#section").val(section);
-        var term1 = row.closest("tr").find("td:eq(5)").text();
-        $("#term1").val(term1);
-        var term2 = row.closest("tr").find("td:eq(6)").text();
-        $("#term2").val(term2);
-        var term3 = row.closest("tr").find("td:eq(7)").text();
-        $("#term3").val(term3);
+        $("#calc_").click(function () {
+            const calc_option = $("#calc_select").val();
+            console.log(calc_option);
+            $.ajax(
+                {
+                    url: "./backend/db/defaulters/calculation.php",
+                    type: "post",
+                    data: { option: calc_option },
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $("#calc_").find(".text").val("Loading..");
+                    },
+                    success: function (res) {
+                        console.log(res);
+                        if (res[0] == 200) {
+                            table2.destroy();
+                            $("#default_heading").text("Total Fee Collections and Defaulters");
+                            $("#defaulter_head").html(res[1]);
+                            $("#defaulter_body").html(res[2]);
+                            table2 = new DataTable('#defaulters_list',
+                                {
+                                    ordering: false,
+                                    pageLength: -1,
+                                    layout:
+                                    {
+                                        topStart: {
+                                            buttons: ['excel']
+                                        },
+                                        bottomEnd: null,
+                                        bottomStart: null
+                                    },
+                                }
+                            );
+                            $("#defaulter_table").css("display", "block");
+                        }
+                        else if (res[0] == 201) {
+                            table2.destroy();
+                            $("#default_heading").text("Total Defaulters of Term I");
+                            $("#defaulter_head").html(res[1]);
+                            $("#defaulter_body").html(res[2]);
+                            table2 = new DataTable('#defaulters_list',
+                                {
+                                    ordering: false,
+                                    pageLength: -1,
+                                    layout:
+                                    {
+                                        topStart: {
+                                            buttons: ['excel']
+                                        },
+                                        bottomEnd: null,
+                                        bottomStart: null
+                                    },
+                                }
+                            );
+                            $("#defaulter_table").css("display", "block");
+                        }
+                        else if (res[0] == 202) {
+                            table2.destroy();
+                            $("#default_heading").text("Total Defaulters of Term II");
+                            $("#defaulter_head").html(res[1]);
+                            $("#defaulter_body").html(res[2]);
+                            table2 = new DataTable('#defaulters_list',
+                                {
+                                    ordering: false,
+                                    pageLength: -1,
+                                    layout:
+                                    {
+                                        topStart: {
+                                            buttons: ['excel']
+                                        },
+                                        bottomEnd: null,
+                                        bottomStart: null
+                                    },
+                                }
+                            );
+                            $("#defaulter_table").css("display", "block");
+                        }
+                        else if (res[0] == 203) {
+                            table2.destroy();
+                            $("#default_heading").text("Total Defaulters of Term III");
+                            $("#defaulter_head").html(res[1]);
+                            $("#defaulter_body").html(res[2]);
+                            table2 = new DataTable('#defaulters_list',
+                                {
+                                    ordering: false,
+                                    pageLength: -1,
+                                    layout:
+                                    {
+                                        topStart: {
+                                            buttons: ['excel']
+                                        },
+                                        bottomEnd: null,
+                                        bottomStart: null
+                                    },
+                                }
+                            );
+                            $("#defaulter_table").css("display", "block");
+                        }
+                        else if (res[0] == 204) {
+                            table2.destroy();
+                            $("#default_heading").text("Total received of Class with Section");
+                            $("#defaulter_head").html(res[1]);
+                            $("#defaulter_body").html(res[2]);
+                            table2 = new DataTable('#defaulters_list',
+                                {
+                                    ordering: false,
+                                    pageLength: -1,
+                                    layout:
+                                    {
+                                        topStart: {
+                                            buttons: ['excel']
+                                        },
+                                        bottomEnd: null,
+                                        bottomStart: null
+                                    },
+                                }
+                            );
+                            $("#defaulter_table").css("display", "block");
+                        }
+                        else if (res[0] == 205) {
+                            table2.destroy();
+                            $("#default_heading").text("Grand Total of All Students");
+                            $("#defaulter_head").html(res[1]);
+                            $("#defaulter_body").html(res[2]);
+                            table2 = new DataTable('#defaulters_list',
+                                {
+                                    ordering: false,
+                                    pageLength: -1,
+                                    layout:
+                                    {
+                                        topStart: {
+                                            buttons: ['excel']
+                                        },
+                                        bottomEnd: null,
+                                        bottomStart: null
+                                    },
+                                }
+                            );
+                            $("#defaulter_table").css("display", "block");
+                        }
+                    }
+                }
+            );
+        });
+        $("#clear_").click(function () {
+            const class_clear = $("#class_types").val();
+            Swal.fire({
+                title: `Are you sure to clear ${class_clear} class in table `,
+                showCancelButton: true,
+                confirmButtonText: "Clear",
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax(
+                        {
+                            url: "./backend/db/defaulters/clear_class.php",
+                            type: "post",
+                            data: { class: class_clear },
+                            beforeSend: function () {
+                                $("#transfer_btn").find(".text").val("Loading..");
+                            },
+                            success: function (res) {
+                                console.log(res);
+                                const taken = parseInt(res);
+                                if (taken == 0) {
+                                    window.resultSet[class_clear] = [];
+                                    table1.clear().draw();
+                                    Toast.fire({
+                                        html: `<p class='alert_content'>Records of ${class_clear} class cleared in overall table</p>`,
+                                        icon: "success",
+                                        customClass: {
+                                            timerProgressBar: 'bar_success',
+                                            icon: "icon_success"
+                                        }
+                                    });
+                                }
+                                else {
+                                    Toast.fire({
+                                        html: `<p class='alert_content'>Records of ${class_clear} class has not cleared in overall table</p>`,
+                                        icon: "error",
+                                        customClass: {
+                                            timerProgressBar: 'bar_error',
+                                            icon: "icon_error"
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                }
+            });
+        });
+        var update_sno = 0;
+        $("#overall_form_data").submit(function (e) {
+            e.preventDefault();
+            var decide = $("#decide").val();
+            const overall_data = $("#overall_form_data").serializeArray();
+            const input_date = document.getElementById("paid_date").value;
+            if (input_date != "") {
+                let [year, month, day] = input_date.split('-');
+                var formattedDate = `${day}/${month}/${year}`;
+            }
+            else {
+                var formattedDate = "nil";
+            }
+            overall_data.push({ name: 'formatted_date', value: formattedDate })
+            const row_length = table1.data().length;
+            if (decide == "0") {
+                overall_data.push({ name: 'arr_index', value: row_length });
+            }
+            else {
+                overall_data.push({ name: "sno", value: update_sno });
+                overall_data.push({ name: 'arr_index', value: index });
+            
+            }
+            $.ajax({
+                url: "./backend/db/defaulters/action.php",
+                type: "post",
+                data: overall_data,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#collection_submit").find(".text").val("Loading..");
+                },
+                success: function (res) {
+                    console.log("Clicked");
+                    if (res[0] == 1) {
+                        console.log(res);
+                        console.log("the decision" + decide);
+                        const selected_option = $("#class_types").val();
+                        const class_var = res[1][3];
+                        console.log("class is " + class_var);
+                        if (decide == "0") {
+                            console.log(selected_option == class_var);
+                            const current_row = res[1].slice();
+                            current_row.splice(16, 1);
+                            current_row.splice(0, 1);
+                            console.log("the current array is" + current_row);
+                            if (selected_option == class_var) {
+                                console.log("after splice" + current_row);
+                                table1.row.add(res[1]).draw(false);
+                            }
+                            window.resultSet[class_var].push(current_row);
+                            Toast.fire({
+                                html: `<p class='alert_content'>The data has inserted in overall Table</p>`,
+                                icon: "success",
+                                customClass: {
+                                    timerProgressBar: 'bar_success',
+                                    icon: "icon_success"
+                                }
+                            });
+                            $("#overall_form_data").trigger("reset");
+                        } else {
+                            const current_row = res[1].slice();
+                            current_row.splice(16, 1);
+                            current_row.splice(0, 1);
+                            console.log("the current array is" + current_row);
+                            if (selected_option == class_var) {
+                                console.log("after the splice" + res[1]);
+                                table1.row(update_btn.parents("tr")).data(res[1]).draw(false);
+                                window.resultSet[selected_option][index] = current_row;
+                                console.log(current_row);
+                            }
+                            else {
+                                window.resultSet[class_var].push(current_row);
+                                window.resultSet[selected_option].splice(index, 1);
+                                table1.row(update_btn.parents("tr")).remove().draw(false);
+                            }
+                            Toast.fire({
+                                html: `<p class='alert_content'>The data is updated in overall table</p>`,
+                                icon: "success",
+                                customClass: {
+                                    timerProgressBar: 'bar_success',
+                                    icon: "icon_success"
+                                }
+                            });
+                            $("#decide").val(0);
+                            $("#overall_form_data").trigger("reset");
+                            $('#overall_table_form').css('display', 'none');
+                        }
+                    }
+                    else if (res[0] = 404) {
+                        Toast.fire({
+                            html: `<p class='alert_content'>${res[1]}</p>`,
+                            icon: "error",
+                            customClass: {
+                                timerProgressBar: 'bar_error',
+                                icon: "icon_error"
+                            }
+                        });
+                    }
+                    else {
+                        swal.fire({
+                            title: "ERROR",
+                            html: `<p class='alert_content'>${res}</p>`,
+                            icon: "error",
+                            customClass: {
+                                timerProgressBar: 'bar_success',
+                                icon: "icon_success"
+                            }
+                        
+                        });
+                    }
+                    $("#collection_submit").val("Save");
+                    // console.log($("#overall_form_data"));
+                }
+            });
+        });
+        $("body").on("click", ".delete", function (e) {
+            const selected_option = $("#class_types").val();
+            e.preventDefault();
+            var ad = $(this).attr("ad");
+            index = $(this).attr("index");
+            let btn = $(this);
+            Swal.fire({
+                title: "Are you sure delete the transaction",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: './backend/db/defaulters/delete.php',
+                        data: { admin: ad },
+                        beforeSend: function () {
+                            $(btn).find(".text").text("Deleting...");
+                        },
+                        success: function (res) {
+                            const taken = parseInt(res);
+                            if (taken == 0) {
+                                table1.row(btn.parents('tr')).remove().draw(false);
+                                window.resultSet[selected_option].splice(index, 1);
+                                Toast.fire({
+                                    html: `<p class='alert_content'>The data is deleted in overall table</p>`,
+                                    icon: "success",
+                                    customClass: {
+                                        timerProgressBar: 'bar_success',
+                                        icon: "icon_success"
+                                    }
+                                });
+                            }
+                            else {
+                                Toast.fire({
+                                    html: `<p class='alert_content'>The data is not deleted in overall table</p>`,
+                                    icon: "error",
+                                    customClass: {
+                                        timerProgressBar: 'bar_error',
+                                        icon: "icon_error"
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        $("body").on("click", ".update", function (e) {
+            e.preventDefault();
+            console.log("update");
+            var ad = $(this).attr("ad");
+            index = $(this).attr("index");
+            update_btn = $(this);
+            console.log("index is" + index);
+            $("#decide").val(ad);
+            var row = $(this);
+            update_sno = row.closest("tr").find("td:eq(0)").text();
+            var admin = row.closest("tr").find("td:eq(1)").text();
+            $("#admission").val(admin);
+            var stu_name = row.closest("tr").find("td:eq(2)").text();
+            $("#stu_name").val(stu_name);
+            var class_ = row.closest("tr").find("td:eq(3)").text();
+            $("#class").val(class_);
+            var section = row.closest("tr").find("td:eq(4)").text();
+            $("#section").val(section);
+            var term1 = row.closest("tr").find("td:eq(5)").text();
+            $("#term1").val(term1);
+            var term2 = row.closest("tr").find("td:eq(6)").text();
+            $("#term2").val(term2);
+            var term3 = row.closest("tr").find("td:eq(7)").text();
+            $("#term3").val(term3);
         
-        //date formatting
-        var paid_date = row.closest("tr").find("td:eq(8)").text();
-        let [day, month, year] = paid_date.split('/');
-        // Format the date to YYYY-MM-DD 
-        let formattedDate = `${year}-${month}-${day}`;
-        // Set the formatted date to the date input 
-        $("#paid_date").val(formattedDate);
+            //date formatting
+            var paid_date = row.closest("tr").find("td:eq(8)").text();
+            let [day, month, year] = paid_date.split('/');
+            // Format the date to YYYY-MM-DD 
+            let formattedDate = `${year}-${month}-${day}`;
+            // Set the formatted date to the date input 
+            $("#paid_date").val(formattedDate);
 
-        var scholarship = row.closest("tr").find("td:eq(9)").text();
-        $("#scholarship").val(scholarship);
-        var scholarship_amt = row.closest("tr").find("td:eq(10)").text();
-        $("#scholarship_amt").val(scholarship_amt);
-        var pending = row.closest("tr").find("td:eq(11)").text();
-        $("#pending").val(pending);
-        var write_off = row.closest("tr").find("td:eq(12)").text();
-        $("#write_off").val(write_off);
-        $('#overall_table_form').css('display', 'flex');
+            var scholarship = row.closest("tr").find("td:eq(9)").text();
+            $("#scholarship").val(scholarship);
+            var scholarship_amt = row.closest("tr").find("td:eq(10)").text();
+            $("#scholarship_amt").val(scholarship_amt);
+            var pending = row.closest("tr").find("td:eq(11)").text();
+            $("#pending").val(pending);
+            var write_off = row.closest("tr").find("td:eq(12)").text();
+            $("#write_off").val(write_off);
+            $('#overall_table_form').css('display', 'flex');
 
-    });
+        });
+    }
 });
 
 
