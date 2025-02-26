@@ -5,7 +5,7 @@
   align-items: center;
 }
 #datatable h1{
-  padding-top:20px;
+  padding-block:10px;
 }
  table ,td,th
  {
@@ -77,11 +77,6 @@ padding-bottom:10px;
 {
   align-self: flex-start;
 } */
-#new_btn
-{
-  margin-right:20px;
-  padding-bottom:5px;
-}
 .select{
   display:flex;
   align-items: center;
@@ -313,16 +308,18 @@ padding-bottom:10px;
 }
 
 /* defaulter table view */
-
-#defaulter_table
+#defaulter_table,#user_table
 {
-  display: none;
+  display:none;
+}
+.popUp
+{
   width:90vw;
   height:70vh;
   position: fixed;
   top: 50%;
   left:50%;
-  transform:translate(-50%,-50%);
+  transform:translate(-50%,-50%); 
   padding-inline: 10px;
   z-index: 5;
   max-height: fit-content;
@@ -348,12 +345,12 @@ padding-bottom:10px;
   max-width:fit-content;
 
 }
-#defaults_close
+.close_form
 {
   position: relative;
   height: 30px;
 }
-#defaults_close svg
+.close_form svg
 {
   background-color: rgb(255, 0, 0);
   color:white;
@@ -361,7 +358,7 @@ padding-bottom:10px;
   position: absolute;
   right:5px;
 }
-#defaults_close svg:hover
+.close_form svg:hover
 {
   background-color: rgb(255, 78, 78);
 }

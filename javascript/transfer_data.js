@@ -31,6 +31,24 @@ var table2 = new DataTable('#defaulters_list',
         },
     }
 );
+var table3 = new DataTable('#user_list',
+    {
+        ordering: false,
+        pageLength: -1,
+        layout:
+        {
+            topStart: {
+                buttons: [{
+            extend: 'excelHtml5',
+            text: 'Excel',
+            exportOptions: { columns: ':not(:last-child)' }
+        }]
+            },
+            bottomEnd: null,
+            bottomStart: null
+        },
+    }
+);
 $(document).ready(function () {
     const visited_user = window.user;
     if (visited_user == "admin") {
@@ -313,4 +331,55 @@ $(document).ready(function () {
             }
         });
     }
+    $("#user_list").on("click", ".user_del", function (e) {
+        e.preventDefault();
+        let btn = $(this);
+        const username =btn.closest("tr").find("td:eq(1)").text();;
+        const user_role =btn.closest("tr").find("td:eq(2)").text();;
+        Swal.fire({
+            title: "Are you sure delete the " + user_role,
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: './backend/db/transfer/userDel.php',
+                    data: {
+                        uname: username,
+                        role:user_role
+                     },
+                    beforeSend: function () {
+                        $(btn).find(".text").text("Deleting...");
+                    },
+                    success: function (res) {
+                        console.log(res);
+                        const taken = parseInt(res);
+                        if (taken == 0) {
+                            table3.row(btn.parents('tr')).remove().draw(false);
+                            Toast.fire({
+                                html: `<p class='alert_content'>The ${user_role} is deleted from users</p>`,
+                                icon: "success",
+                                customClass: {
+                                    timerProgressBar: 'bar_success',
+                                    icon: "icon_success"
+                                }
+                            });
+                        }
+                        else {
+                            Toast.fire({
+                                html: `<p class='alert_content'>The ${user_role} is not deleted from users</p>`,
+                                icon: "error",
+                                customClass: {
+                                    timerProgressBar: 'bar_error',
+                                    icon: "icon_error"
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    });
 });
