@@ -6,7 +6,7 @@ $(document).ready(function () {
         console.log(user_type);
         const uname = $("#uname").val();
         const user_pwd = $("#user_pwd").val();
-        const gohead = login_validate(uname, user_pwd);
+        const gohead = login_validate(uname, user_pwd,"login");
         if (gohead == 2)
         {
             $.ajax({
@@ -53,7 +53,7 @@ $(document).ready(function () {
         console.log(user_type);
         const uname = $("#uname").val();
         const user_pwd = $("#user_pwd").val();
-        const gohead = login_validate(uname, user_pwd);
+        const gohead = login_validate(uname, user_pwd,"signUp");
         if (gohead == 2)
         {
              $.ajax({
@@ -97,7 +97,7 @@ $(document).ready(function () {
     });
 });
 
-function login_validate(uname, user_pwd) {
+function login_validate(uname, user_pwd,action) {
     const email_pattern = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/;
     const Error_uname = $("#uname_msg");
     const Error_pwd = $("#pwd_msg");
@@ -124,31 +124,33 @@ function login_validate(uname, user_pwd) {
         input_field[1].style.borderColor = "red";
     }
     else {
-        let pwd_error = "Password must contain "
         let success = true;
-        if (!/(?=.*\d)/.test(user_pwd)) {
-            success = false;
-            pwd_error += "'Atleast one digit' ";
-        }
-        if (!/(?=.*[a-z])/.test(user_pwd)) {
-            success = false;
-            pwd_error += "'Atleast one lowercase letter' ";
+        let pwd_error = "Password must contain "
+        if (action != "login") {
+            if (!/(?=.*\d)/.test(user_pwd)) {
+                success = false;
+                pwd_error += "'Atleast one digit' ";
+            }
+            if (!/(?=.*[a-z])/.test(user_pwd)) {
+                success = false;
+                pwd_error += "'Atleast one lowercase letter' ";
             
-        }
-        if (!/(?=.*[A-Z])/.test(user_pwd)) {
-            success = false;
-            pwd_error += "'Atleast one uppercase letter' ";
+            }
+            if (!/(?=.*[A-Z])/.test(user_pwd)) {
+                success = false;
+                pwd_error += "'Atleast one uppercase letter' ";
                 
-        }
-        if (!/(?=.*[@#$%^&+=])/.test(user_pwd)) {
-            success = false;
-            pwd_error += "'Special characters like @#$%^&+=' ";
+            }
+            if (!/(?=.*[@#$%^&+=])/.test(user_pwd)) {
+                success = false;
+                pwd_error += "'Special characters like @#$%^&+=' ";
                 
-        }
-        if (!/.{8,}/.test(user_pwd)) {
-            success = false;
-            pwd_error += "'minimum 8 characters' ";
+            }
+            if (!/.{8,}/.test(user_pwd)) {
+                success = false;
+                pwd_error += "'minimum 8 characters' ";
 
+            }
         }
         if (success == true) {
             Error_pwd.text("");
